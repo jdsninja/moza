@@ -1,0 +1,56 @@
+<!-- jQuery template -->
+<script id="tileTpl" type="text/x-jquery-tmpl">
+	<div class="tile ${size}" style="width:${width}%;height:${height}%;top:${y}%;left:${x}%;" data-id="${id}">
+		<a href="#${itemUrl}">
+			<img src="${imgSrc}" border="0" style="top:-${imageTop}%;left:-${imageLeft}%;${imgWidth}${imgHeight}">
+			<span class="infos">
+				<span class="wrapper">
+					<span class="category">${categoryName}</span>
+					<span class="title">${title}</span>
+				</span>
+			</span>
+			<span class="selected" style="width:96%;height:93%;position:absolute;top:0;left:0;border:2px solid black;display:none;border-bottom:3px solid black"></span>
+		</a>		
+	</div>
+</script>
+
+
+<link rel="stylesheet" href="css/moza.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="css/ie7-8.css" type="text/css" charset="utf-8" />
+<![endif]-->
+<!--[if lt IE 7]>
+<link rel="stylesheet" href="css/ie6.css" type="text/css" charset="utf-8" />
+<![endif]-->
+<!-- end jQuery template -->
+
+
+<div id="dashboard" class="home">
+	<div id="contentCtn" class="content">
+		<div class="wrapper">
+			<section id="grid"></section>
+			<div id="dCcontent"><div class="padding"></div></div>
+		</div>
+	</div>
+	<div id="toolTips">
+		<span class="arrow"></span>
+		<div class="category"></div>
+		<div class="title"></div>
+	</div>
+	<div id="data">
+		<div id="related"></div><!-- todo: create this in js. -->
+		<div id="article"></div><!-- todo: create this in js. -->
+		<div id="dImg"></div><!-- todo: create this in js. -->
+	</div>
+</div>
+
+<script src="js/libs/innershiv.js"></script>
+<script src="js/libs/jquery-1.6.4.min.js"></script>
+<script src="js/libs/jquery-ui-1.8.15.custom.min.js"></script>
+<script src="js/plugins/jquery.tmpl.js"></script>
+<script src="js/plugins/autocolumn.js"></script>
+<script src="js/libs/underscore-1.1.7.min.js"></script>
+<script src="js/libs/backbone-0.5.3.min.js"></script>
+<script src="js/plugins/moza.js"></script>
+<script src="js/dashboard.js"></script>

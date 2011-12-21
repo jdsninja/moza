@@ -1,0 +1,18 @@
+[
+	{
+		"title": "[Lorem ipsum category 1]",
+		"longTitle": "[Lorem ipsum category 1 long title]",
+		"slug": "cat1",
+		"id": 1,
+		"preview": "[Lorem ipsum preview]",
+		"content": "[Lorem ipsum content]"
+	},
+	{
+	"title": "[Lorem ipsum category 2]",
+	"longTitle": "[Lorem ipsum category 2 long title]",
+	"slug": "cat2",
+	"id": 2,
+	"preview": "[Lorem ipsum preview]",
+	"content": "[Lorem ipsum content]"
+	}
+]
