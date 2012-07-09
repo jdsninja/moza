@@ -348,15 +348,6 @@
 
 
 
-		/**
-		* Show new associates
-		*/
-		function showNewAssociates(article) {
-			/*$('#dashboard').addClass('new-associates');
-			renderTemplate("#articleTpl", "#dashboard #dCcontent div", {title: 'New Associates', content: ''});
-			enablePagination('#associateTpl', article, 5, 3, 'associates/new-associates');*/
-		}
-
 		function getRouter() {
 			var Router = Backbone.Router.extend({
 				routes: {
