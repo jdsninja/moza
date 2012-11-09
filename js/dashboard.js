@@ -28,7 +28,6 @@
 			});
 			return categoriesView;
 		}*/
-
 		function start() {
 			Backbone.history.start();
 			//showCategories();
@@ -196,7 +195,7 @@
 								'width': x,
 								'height': y
 							},
-							Items: dashboard.articles,
+							//Items: dashboard.articles,
 							random: random,
 							tile: {
 								big : {
@@ -351,34 +350,7 @@
 		function getRouter() {
 			var Router = Backbone.Router.extend({
 				routes: {
-					"": "index",
-					"home": "index",
-					"products": "category",
-					"products/:id": "article",
-					"associates": "category",
-					"associates/new-associates/page/:number": "article",
-					"associates/:id": "article",
-					"culture": "category",
-					"culture/:id": "article",
-					"reputation": "category",
-					"reputation/:id": "article",
-					"effectiveness": "category",
-					"effectiveness/:id": "article",
-					"growth": "category",
-					"growth/:id": "article",
-					"contribute": "contribute",
-
-					"products/:articleId/page/:number": "article",
-					"associates/:articleId/page/:number": "article",
-					"culture/:articleId/page/:number": "article",
-					"reputation/:articleId/page/:number": "article",
-					"effectiveness/:articleId/page/:number": "article",
-					"growth/:articleId/page/:number": "article",
-
-					"all-stories": "archive",
-					"all-stories/page/:number": "archive",
-					"all-stories/:categorySlug": "archive",
-					"all-stories/:categorySlug/page/:pageId": "archive"
+					"": "index"
 				},
 				initialize: function () {
 				},
@@ -391,7 +363,6 @@
 
 		function getViews() {
 			var Views = {};
-
 			Views.Index = Backbone.View.extend({
 				initialize: function () {
 					storeViewHistory('home');
@@ -414,13 +385,13 @@
 }(jQuery, Backbone));
 
 $(function () {
-	Dashboard = new Dashboard();
+	//Dashboard = new Dashboard();
 
 	/**
 	* Tool tips that appear on roll over of both header menu and tile
 	* todo: need to put this in moza.js and make is more flexible so dashboard can re-use it easly
 	*/
-	tooltips = $("#toolTips");
+	/*tooltips = $("#toolTips");
 	function showToolTips(element, title, category) {
 		var position = element.position(),
 		tileW = element.width(), tileH = element.height(), left, top, delay;
@@ -444,7 +415,7 @@ $(function () {
 			opacity: 1
 		}, 0);
 	}
-	
+
 	$("#grid .tile.small a").live("mouseenter", function(event) {
 		var tile = $(this).parent();
 		showToolTips(tile, tile.find('.title').html(), tile.find('.category').html());
@@ -456,5 +427,5 @@ $(function () {
 
 	$("#toolTips, .tile.medium, .tile.big").hover(function(){
 		tooltips.css('opacity', 0).css('visibility', 'hidden');
-	});
+	});*/
 });

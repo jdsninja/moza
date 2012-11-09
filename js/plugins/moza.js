@@ -1,10 +1,8 @@
 /*global window, console, jQuery, undef */
 (function ($, undef) {
 	"use strict";
-
 	var Moza = {};
 	window.Moza = Moza;
-
 	/**
 	* Define grid specification
 	*/
@@ -20,7 +18,7 @@
 				},
 				grid: {
 					width: 10,
-					height: 5
+					height: 10
 				},
 				/*
 				The size and number of tile are controlled here
@@ -28,9 +26,9 @@
 				 */
 				tile: {
 					big : {
-						max: 2,
-						width: 4,
-						height: 4
+						max: 1,
+						width: 3,
+						height: 3
 					},
 					medium : {
 						max: 10,
@@ -203,28 +201,6 @@
 				return this.Coords;
 			};
 
-			this.showMarker = function () {
-				/*
-				* Show all the position in the grid
-				* THIS IS ONLY FOR TEST
-				*/
-				var i, pointer, key, color;
-				for (i = 0; i < settings.Items.length; i += 1) {
-					color = '#000';
-					x = grid.Coords.all[i].x * grid.tileWidth;
-					y = grid.Coords.all[i].y * grid.tileHeight;
-					//todo: put css in style sheet
-					pointer	= $('<span class="">').css({
-						'position': 'absolute',
-						'background-color': '#000',
-						'top': y,
-						'left': x
-					});
-					pointer.html(grid.Coords.all[i].x + ', ' + grid.Coords.all[i].y);
-					ctn.append(pointer);
-				}
-			};
-
 			this.trimString = function(string, len) {
 				if (string.length > len) {
 					string = string.substring(0, len) + "...";
@@ -258,6 +234,8 @@
 			*/
 			this.getTileInfos = function(tile, item) {
 				var infos = {}, newImageSize;
+
+
 				newImageSize = grid.getImageSize(tile, item);
 				infos = {
 					size: tile.size,
@@ -265,15 +243,15 @@
 					y: tile.target.y * grid.tileHeight * 100 / settings.stage.height,
 					width: (tile.width * 100 / settings.grid.width) - settings.stage.spacerW,
 					height: (tile.height * 100 / settings.grid.height) - settings.stage.spacerH,
-					imgSrc: item.imgSrc,
-					imgWidth: newImageSize.width,
-					imgHeight: newImageSize.height,
-					itemUrl: item.itemUrl,
-					imageTop: 0,
-					imageLeft: 0,
-					categoryName: item.categoryName,
+					//imgSrc: item.imgSrc,
+					//imgWidth: newImageSize.width,
+					//imgHeight: newImageSize.height,
+					//itemUrl: item.itemUrl,
+					//imageTop: 0,
+					//imageLeft: 0,
+					//categoryName: item.categoryName,
 					//categorySlug: Data.items[itemNumber].categorySlug,
-					categorySlug: item.categorySlug,
+					//categorySlug: item.categorySlug,
 					title: grid.trimString(item.title, 40),
 					id: item.id
 				};
@@ -374,6 +352,9 @@
 			this.placeTiles = function () {
 				var i, j, tile, size = 'medium', tileOccupationCoords, tileQueue = [];
 				$('#dImg').html('');
+				//console.log(settings.Items);
+				settings.Items = articleList;
+				//settings.Items = [{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1}];
 				for (i = 0; i < settings.Items.length; i += 1) {
 					if (!_.isEmpty(grid.Coords.free)) {
 						if (i < settings.tile.big.max) {
@@ -401,10 +382,62 @@
 		// Build the grid
 		grid = new Grid(settings.grid.width, settings.grid.height);
 		grid.build();
-		if (settings.testMode === true) {
-			grid.showMarker();
-		}
-		 //only for test
+		//only for test
 		grid.placeTiles();
 	};
+/*
+	$('#grid').showGrid({
+		grid: {
+			'width': 400,
+			'height': 400
+		},
+		Items: [{test:'asdf'}],
+		random: true
+	});
+*/
+	/*$("#grid .tile").stop();
+	$("#grid").html('');
+	 */
+
+
+	google.load("feeds", "1");
+	var articleList = []
+
+
+	function initialize() {
+		var feed = new google.feeds.Feed("http://feeds2.feedburner.com/time/topstories");
+		feed.setNumEntries(30);
+		feed.load(function(result) {
+			if (!result.error) {
+				console.log(result);
+				//var container = document.getElementById("feed");
+				for (var i = 0; i < result.feed.entries.length; i++) {
+					var entry = result.feed.entries[i];
+					//console.log(entry);
+					/*var div = document.createElement("div");
+					div.appendChild(document.createTextNode(entry.title));
+					container.appendChild(div);*/
+					articleList.push({
+						id: 1,
+						title: entry.title
+					});
+
+					var store = $('.div').text().match(/::([^:]+)::/g);
+					//$('element').length == 0; // no element found
+				}
+				console.log(articleList);
+				$('#grid').showGrid();
+				/*$('#grid').showGrid({
+					grid: {
+						'width': x,
+						'height': y
+					},
+					Items: dashboard.articles,
+					random: random
+				});
+*/
+			}
+		});
+	}
+	google.setOnLoadCallback(initialize);
 }(jQuery));
