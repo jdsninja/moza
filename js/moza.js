@@ -1,4 +1,15 @@
-/*global window, console, jQuery, undef */
+/*!
+ * jQuery Moza plugin v1.0.0
+ * https://github.com/jeromeds/Moza
+ *
+ * Copyright 2012 Jerome D.Soucy (http://jeromeds.com)
+ *
+ * Further changes, comments: @jeromeds
+ * Licensed under the MIT License (LICENSE.txt)
+ * Thanks to: Mathiey Sylvain @masyl https://github.com/masyl what JavaScript is all about
+ * Copyright (c) 2012 Jerome D.Soucy (http://jeromeds.com)
+ */
+
 (function ($, undef) {
 	"use strict";
 	var Moza = {};
@@ -17,8 +28,8 @@
 					spacerH: 2 * 100 / this.height()
 				},
 				grid: {
-					width: 10,
-					height: 10
+					width: 6,
+					height: 5
 				},
 				/*
 				The size and number of tile are controlled here
@@ -234,16 +245,15 @@
 			*/
 			this.getTileInfos = function(tile, item) {
 				var infos = {}, newImageSize;
-
-
 				newImageSize = grid.getImageSize(tile, item);
+				console.log("test=",item.title);
 				infos = {
 					size: tile.size,
 					x: tile.target.x * grid.tileWidth * 100 / settings.stage.width,
 					y: tile.target.y * grid.tileHeight * 100 / settings.stage.height,
 					width: (tile.width * 100 / settings.grid.width) - settings.stage.spacerW,
 					height: (tile.height * 100 / settings.grid.height) - settings.stage.spacerH,
-					//imgSrc: item.imgSrc,
+					imgSrc: item.img,
 					//imgWidth: newImageSize.width,
 					//imgHeight: newImageSize.height,
 					//itemUrl: item.itemUrl,
@@ -267,7 +277,7 @@
 				if (i === undefined) {
 					i = 0;
 				}
-				tileTmpl = $("#tileTpl").tmpl(tile[i]).appendTo('#grid');
+				tileTmpl = $("#tileTpl").tmpl(tile[i]).appendTo('#moza');
 				/**
 				* Remove animation for IE 8 and below because they cannot take it well. It't just to much for them.
 				*/
@@ -282,9 +292,9 @@
 					});
 				
 				//highlight div when selected
-				if(settings.activeId == tile[i].id) {
-					tileTmpl.find('.selected').show(0);
-				}
+				//if(settings.activeId == tile[i].id) {
+				//	tileTmpl.find('.selected').show(0);
+				//}
 			}
 
 			/**
@@ -326,7 +336,7 @@
 				if (grid.IE < 9 && grid.IE > -1) {
 					//no tile animation for IE 6, 7 and 8. They cannot take it...
 				} else {
-					$('#grid .tile[data-id="' + tile[i].id + '"] img').animate(
+					$('#moza .tile[data-id="' + tile[i].id + '"] img').animate(
 						{
 							opacity: 1
 						}, 
@@ -352,9 +362,7 @@
 			this.placeTiles = function () {
 				var i, j, tile, size = 'medium', tileOccupationCoords, tileQueue = [];
 				$('#dImg').html('');
-				//console.log(settings.Items);
 				settings.Items = articleList;
-				//settings.Items = [{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1},{id: 1}];
 				for (i = 0; i < settings.Items.length; i += 1) {
 					if (!_.isEmpty(grid.Coords.free)) {
 						if (i < settings.tile.big.max) {
@@ -399,45 +407,17 @@
 	$("#grid").html('');
 	 */
 
-
-	google.load("feeds", "1");
-	var articleList = []
-
-
-	function initialize() {
-		var feed = new google.feeds.Feed("http://feeds2.feedburner.com/time/topstories");
-		feed.setNumEntries(30);
-		feed.load(function(result) {
-			if (!result.error) {
-				console.log(result);
-				//var container = document.getElementById("feed");
-				for (var i = 0; i < result.feed.entries.length; i++) {
-					var entry = result.feed.entries[i];
-					//console.log(entry);
-					/*var div = document.createElement("div");
-					div.appendChild(document.createTextNode(entry.title));
-					container.appendChild(div);*/
-					articleList.push({
-						id: 1,
-						title: entry.title
-					});
-
-					var store = $('.div').text().match(/::([^:]+)::/g);
-					//$('element').length == 0; // no element found
-				}
-				console.log(articleList);
-				$('#grid').showGrid();
-				/*$('#grid').showGrid({
-					grid: {
-						'width': x,
-						'height': y
-					},
-					Items: dashboard.articles,
-					random: random
+	var articleList = [];
+	$.getJSON('data/data.json',
+		function(data) {
+			$.each(data, function(key, val) {
+				articleList.push({
+					id: val.id,
+					title: val.title,
+					img: val.img
 				});
-*/
-			}
-		});
-	}
-	google.setOnLoadCallback(initialize);
+			});
+			$('#moza').showGrid();
+		}
+	);
 }(jQuery));

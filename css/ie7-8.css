@@ -1,7 +1,0 @@
-#grid .infos{
-    background-color:#000;
-    filter: alpha(opacity=80);
-}
-#dashboard.new-associates #dItemsCtn{width:537px;}
-#dashboard.archive #dItemsCtn{width:676px;}
-#dashboard.new-associates #dItems .item{padding-bottom:5px;}

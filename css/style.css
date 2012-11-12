@@ -1,154 +1,127 @@
-/**
-* reset css
-*/
-html,
-body,
-div,
-span,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-abbr,
-address,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-samp,
-small,
-strong,
-sub,
-sup,
-var,
-b,
-i,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
 article,
 aside,
-canvas,
 details,
 figcaption,
 figure,
 footer,
 header,
 hgroup,
-menu,
 nav,
-section,
-summary,
-time,
-mark,
+section {
+  display: block;
+}
 audio,
+canvas,
 video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+audio:not([controls]) {
+  display: none;
+}
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+/*a:focus {
+	.tab-focus();
+}*/
+a:hover,
+a:active {
+  outline: 0;
+}
+sub,
+sup {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  /* Responsive images (ensure images don't scale beyond their parents) */
+
+  max-width: 100%;
+  /* Part 1: Set a maxium relative to the parent */
+
+  width: auto\9;
+  /* IE7-8 need help adjusting responsive images */
+
+  height: auto;
+  /* Part 2: Scale the height according to the width, otherwise you get stretching */
+
+  vertical-align: middle;
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+#map_canvas img,
+.google-maps img {
+  max-width: none;
+}
+button,
+input,
+select,
+textarea {
   margin: 0;
+  font-size: 100%;
+  vertical-align: middle;
+}
+button,
+input {
+  *overflow: visible;
+  line-height: normal;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
   padding: 0;
   border: 0;
-  outline: 0;
-  font-size: 100%;
-  vertical-align: baseline;
-  background: transparent;
 }
-li {
-  list-style: none;
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer;
 }
-/* html5 IE fix */
-header,
-nav,
-section,
-aside,
-footer,
-time,
-figure,
-figcaption {
-  display: block;
+input[type="search"] {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-appearance: textfield;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+textarea {
+  overflow: auto;
+  vertical-align: top;
 }
 /* default */
 html,
 body {
   width: 100%;
   height: 100%;
+  padding: 0;
+  margin: 0;
 }
 body {
   font-size: 12px;
   color: #000;
   font-family: arial;
 }
-/*
-#dashboard{
-	a,
-	a:active {
-		text-decoration: none;
-	}#data {
-		 height: 0;
-		 overflow: hidden;
-		 position: absolute;
-		 width: 0;
-	 }
+li {
+  list-style: none;
 }
-*/
-/* util */
-.clearfix:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-/**
-*
-*/
-/*
-#dashboard {
-	margin: 0 auto;
-	background-color: #fff;
-	height: 500px;
-	width: 700px;
-	position: relative;
-	#contentCtn {
-		z-index: 1;
-		position: relative;
-		overflow: hidden;
-		height: 100%;
-		.wrapper {
-			overflow: hidden;
-			height: 100%;.wrapper {
-				margin-top: 0px;
-			}
-		}
-	}
-}*/
 /* Grid */
-#grid {
+#moza {
   display: block;
   height: 500px;
   width: 700px;
@@ -157,12 +130,12 @@ body {
   z-index: 1;
   position: relative;
 }
-#grid .tile {
+#moza .tile {
   position: absolute;
   overflow: hidden;
   display: none;
 }
-#grid .tile a {
+#moza .tile a {
   color: #FFFFFF;
   display: block;
   height: 100%;
@@ -170,37 +143,37 @@ body {
   z-index: 1;
   background: #EEEEEE;
 }
-#grid .tile:hover img {
+#moza .tile a:hover img {
   opacity: 0.85;
 }
-#grid .tile span {
+#moza .tile span {
   display: block;
 }
-#grid .tile .wrapper {
+#moza .tile .wrapper {
   padding: 7px;
   margin-top: 0;
   overflow: visible;
 }
-#grid .tile .big {
+#moza .tile .big {
   font-size: 14px;
   line-height: 15px;
 }
-#grid .tile .medium {
+#moza .tile .medium {
   font-size: 11px;
   line-height: 14px;
 }
-#grid .tile .small {
+#moza .tile .small {
   font-size: 12px;
   line-height: 15px;
 }
-#grid .tile .small .infos {
+#moza .tile .small .infos {
   display: none;
 }
-#grid .tile img {
+#moza .tile img {
   position: relative;
   opacity: 0;
 }
-#grid .tile .infos {
+#moza .tile .infos {
   background-color: rgba(0, 0, 0, 0.8);
   tooltirder: 0 none;
   bottom: 0;
@@ -209,37 +182,14 @@ body {
   width: 100%;
   z-index: 2;
 }
-#toolTips .category,
-#grid .category {
-  color: #aaaaaa;
-  display: block;
-  line-height: 11px;
-  padding-bottom: 0;
-  text-transform: uppercase;
-  font-size: 9px;
+body {
+  font-family: 'Open Sans', arial;
 }
-/* Components - util - tools */
-#toolTips {
-  background-color: #000;
-  position: absolute;
-  font-size: 11px;
-  line-height: 15px;
-  color: #fff;
-  padding: 7px;
-  display: none;
-  z-index: 3;
-  visibility: hidden;
-  opacity: 0;
-  max-width: 155px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.75);
+#container {
+  width: 900px;
+  margin: 0 auto;
 }
-#toolTips .arrow {
-  background: url(../img/sprite.png) -36px 0 no-repeat transparent;
-  width: 11px;
-  height: 6px;
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  margin-left: -5.5px;
-  display: block;
+#moza {
+  width: 100%;
+  height: 400px;
 }
