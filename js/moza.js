@@ -161,7 +161,7 @@
 						}
 					}
 				}
-				if (settings.random === true && calNumber !== 0) {
+				if (settings.random === true ) {
 					this.shuffle(targets);
 				}
 				return targets;
@@ -414,7 +414,7 @@
 				{
 					grid:{
 						width: 6,
-						height: 4
+						height: 5
 					},
 					tile: {
 						big : {
