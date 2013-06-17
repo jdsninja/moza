@@ -1,11 +1,15 @@
 {
-	"author": "Jerome D.Soucy (http://jeromeds.com)",
-	"name": "moza",
-	"description": "Our goal is to operate this CDN in a peer reviewed fashion.",
-	"version": "1.0.0",
-	"homepage": "https://github.com/jeromeds/Moza",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jeromeds/Moza.git"
-	}
+  "author": "Jerome D.Soucy (http://jeromeds.com)",
+  "name": "moza",
+  "description": "Our goal is to operate this CDN in a peer reviewed fashion.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/jeromeds/Moza",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeromeds/Moza.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.2"
+  }
 }

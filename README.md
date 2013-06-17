@@ -1,10 +1,10 @@
 # jQuery Moza Plugin
 A better news mosaïc.
 
-## Dependencies
-[jQuery](http://code.jquery.com/jquery-1.8.2.min.js)
-[jQuery Template](http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js)
-[Underscore](http://underscorejs.org/underscore.js)
+## [bower](http://bower.io) Dependencies
+- [jQuery](http://code.jquery.com/jquery-1.8.2.min.js)
+- [jQuery Template](http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js)
+- [Underscore](http://underscorejs.org/underscore.js)
 
 
 ## Use

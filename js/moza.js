@@ -6,7 +6,7 @@
  *
  * Further changes, comments: @jeromeds
  * Licensed under the MIT License (LICENSE.txt)
- * Thanks to: Mathiey Sylvain @masyl https://github.com/masyl what JavaScript is all about
+ * Thanks to: Mathiey Sylvain @masyl https://github.com/masyl
  * Copyright (c) 2012 Jerome D.Soucy (http://jeromeds.com)
  */
 
@@ -15,8 +15,8 @@
 	var Moza = {};
 	window.Moza = Moza;
 	/**
-	* Define grid specification
-	*/
+	 * Define grid specification
+	 */
 	$.fn.showGrid = function (options) {
 		var ctn = this,
 			grid,
@@ -31,22 +31,26 @@
 					width: 6,
 					height: 5
 				},
-				/*
-				The size and number of tile are controlled here
-				The grid will automatically fill the space as best it can based on the numbers supplied here. You may specify a maximum amount of articles to display for each image size. Remeber to take the size of each tile into consideration when changing these values. For example, If you want more 'big' images, it's a good idea to make some room for them by limiting the 'medium' and 'small' types. Also note that 'big' takes priority over 'medium' and the same goes for 'medium' over 'small'.
+				/**
+				 * The size and number of tile are controlled here
+				 * The grid will automatically fill the space as best it can based on the numbers supplied here.
+				 * You may specify a maximum amount of articles to display for each image size.
+				 * Remember to take the size of each tile into consideration when changing these values.
+				 * For example, if you want more 'big' images, it's a good idea to make some room for them by limiting the 'medium' and 'small' types.
+				 * Also note that 'big' takes priority over 'medium' and the same goes for 'medium' over 'small'.
 				 */
 				tile: {
-					big : {
+					big: {
 						max: 1,
 						width: 3,
 						height: 3
 					},
-					medium : {
+					medium: {
 						max: 10,
 						width: 2,
 						height: 2
 					},
-					small : {
+					small: {
 						max: 10,
 						width: 1,
 						height: 1
@@ -77,9 +81,9 @@
 			var rv = -1; // Return value assumes failure.
 			if (navigator.appName == 'Microsoft Internet Explorer') {
 				var ua = navigator.userAgent;
-				var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+				var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
 				if (re.exec(ua) != null)
-				rv = parseFloat( RegExp.$1 );
+					rv = parseFloat(RegExp.$1);
 			}
 			return rv;
 		}
@@ -100,8 +104,8 @@
 			tile.target = [];
 
 			/**
-			* Get all coords needed to place this tile
-			*/
+			 * Get all coords needed to place this tile
+			 */
 			this.getOccupationFromCoord = function (coord) {
 				var i, j, coords = [];
 				if (coord !== undef) {
@@ -115,8 +119,8 @@
 			};
 
 			/**
-			* DOWNGRADE THE SIZE IF NO SPACE IS AVAILABLE
-			*/
+			 * Downgrade the size if no space is available
+			 */
 			this.targets = grid.checkPlacabilityOfTile(this, callNumber);
 			if (_.isEmpty(this.targets)) {
 				for (tileSize in settings.tile) {
@@ -179,6 +183,7 @@
 					return false;
 				}
 			};
+
 			this.putFreeCoorToTakenCoor = function (coord) {
 				var i;
 				for (i = 0; i < grid.Coords.free.length; i += 1) {
@@ -198,8 +203,8 @@
 
 			this.build = function () {
 				/*
-				* Build a multi dimensional array for all the position available
-				*/
+				 * Build a multi dimensional array for all the position available
+				 */
 				var i, j;
 				for (i = 0; i < x; i += 1) {
 					for (j = 0; j < y; j += 1) {
@@ -212,16 +217,16 @@
 				return this.Coords;
 			};
 
-			this.trimString = function(string, len) {
+			this.trimString = function (string, len) {
 				if (string.length > len) {
 					string = string.substring(0, len) + "...";
 				}
 				return string;
 			}
 
-			this.async_memoize = function(fn, hasher) {
+			this.async_memoize = function (fn, hasher) {
 				var memo = {}, args, callback, key;
-				
+
 				hasher = hasher || function (x) {
 					return x;
 				};
@@ -241,12 +246,11 @@
 			}
 
 			/**
-			* Get all the info about the tile. (position, size, id, title, etc.)
-			*/
-			this.getTileInfos = function(tile, item) {
+			 * Get all the info about the tile. (position, size, id, title, etc.)
+			 */
+			this.getTileInfos = function (tile, item) {
 				var infos = {}, newImageSize;
 				newImageSize = grid.getImageSize(tile, item);
-				console.log("test=",item.title);
 				infos = {
 					size: tile.size,
 					x: tile.target.x * grid.tileWidth * 100 / settings.stage.width,
@@ -269,28 +273,28 @@
 			};
 
 			/**
-			* Show tile one after the other.
-			* No animation for IE8 and above
-			*/
-			this.showTile = function(tile, i) {
+			 * Show tile one after the other.
+			 * No animation for IE8 and above
+			 */
+			this.showTile = function (tile, i) {
 				var tileTmpl, tileCtn, animSpeed = 50;
 				if (i === undefined) {
 					i = 0;
 				}
 				tileTmpl = $("#tileTpl").tmpl(tile[i]).appendTo('#moza');
 				/**
-				* Remove animation for IE 8 and below because they cannot take it well. It't just to much for them.
-				*/
-				
-					tileTmpl.css('top', tile[i].y + 1 + '%').animate({
-						opacity: 'show',
-						top: tile[i].y + '%'
-					}, animSpeed, function() {
-						if (i + 1 < tile.length) {
-							grid.showTile(tile, i +1);
-						} 
-					});
-				
+				 * Remove animation for IE 8 and below because they cannot take it well. It't just to much for them.
+				 */
+
+				tileTmpl.css('top', tile[i].y + 1 + '%').animate({
+					opacity: 'show',
+					top: tile[i].y + '%'
+				}, animSpeed, function () {
+					if (i + 1 < tile.length) {
+						grid.showTile(tile, i + 1);
+					}
+				});
+
 				//highlight div when selected
 				//if(settings.activeId == tile[i].id) {
 				//	tileTmpl.find('.selected').show(0);
@@ -298,18 +302,18 @@
 			}
 
 			/**
-			* Define the size of the image inside the tile
-			*/
-			this.getImageSize = function(tile, item) {
+			 * Define the size of the image inside the tile
+			 */
+			this.getImageSize = function (tile, item) {
 				var size = {}, imgW, imgH, tileW, tileH, imageNewHeight;
 				// get tile with and height in pixel
 				tileW = (tile.width) * settings.stage.width / settings.grid.width;
 				tileH = (tile.height) * settings.stage.height / settings.grid.height;
 				//try to the same width for both image and tile
 				imageNewHeight = item.imgHeight * tileW / item.imgWidth;
-				
+
 				//base on that, make sure the space is all fill up with the image
-				if(imageNewHeight < tileH) {
+				if (imageNewHeight < tileH) {
 					//if not, put the same value for the height of the tile and the image
 					imgW = '';
 					imgH = 'height:100%;';
@@ -325,23 +329,23 @@
 			};
 
 			/**
-			* FadeIn the image one after the other.
-			*/
-			this.showImage = function(tile, i) {
+			 * FadeIn the image one after the other.
+			 */
+			this.showImage = function (tile, i) {
 				var i, size = [], image, imageSize, animSpeed = 100;
 				if (i === undefined) {
 					i = 0;
 				}
-				
+
 				if (grid.IE < 9 && grid.IE > -1) {
 					//no tile animation for IE 6, 7 and 8. They cannot take it...
 				} else {
 					$('#moza .tile[data-id="' + tile[i].id + '"] img').animate(
 						{
 							opacity: 1
-						}, 
-						animSpeed, 
-						function(){
+						},
+						animSpeed,
+						function () {
 							if (i + 1 < tile.length) {
 								grid.showImage(tile, i + 1);
 							}
@@ -357,8 +361,8 @@
 			});
 
 			/**
-			* Place the tile in the grid.
-			*/
+			 * Place the tile in the grid.
+			 */
 			this.placeTiles = function () {
 				var i, j, tile, size = 'medium', tileOccupationCoords, tileQueue = [];
 				$('#dImg').html('');
@@ -387,37 +391,50 @@
 				grid.showImage(tileQueue);
 			};
 		}
+
 		// Build the grid
 		grid = new Grid(settings.grid.width, settings.grid.height);
 		grid.build();
 		//only for test
 		grid.placeTiles();
 	};
-/*
-	$('#grid').showGrid({
-		grid: {
-			'width': 400,
-			'height': 400
-		},
-		Items: [{test:'asdf'}],
-		random: true
-	});
-*/
-	/*$("#grid .tile").stop();
-	$("#grid").html('');
-	 */
 
 	var articleList = [];
 	$.getJSON('data/data.json',
-		function(data) {
-			$.each(data, function(key, val) {
+		function (data) {
+			for (var i = 0, len = data.length; i < len; i++) {
 				articleList.push({
-					id: val.id,
-					title: val.title,
-					img: val.img
+					id: data[i].id,
+					title: data[i].title,
+					img: data[i].img
 				});
-			});
-			$('#moza').showGrid();
+			}
+
+			$('#moza').showGrid(
+				{
+					grid:{
+						width: 6,
+						height: 4
+					},
+					tile: {
+						big : {
+							max: 1,
+							width: 3,
+							height: 3
+						},
+						medium : {
+							max: 10,
+							width: 2,
+							height: 2
+						},
+						small : {
+							max: 10,
+							width: 1,
+							height: 1
+						}
+					}
+				}
+			);
 		}
 	);
 }(jQuery));
