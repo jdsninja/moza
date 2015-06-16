@@ -75,19 +75,6 @@
 			settings = $.extend(settings, options);
 		}
 
-		// Returns the version of Internet Explorer or a -1
-		// (indicating the use of another browser).
-		function getInternetExplorerVersion() {
-			var rv = -1; // Return value assumes failure.
-			if (navigator.appName == 'Microsoft Internet Explorer') {
-				var ua = navigator.userAgent;
-				var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-				if (re.exec(ua) !== null)
-					rv = parseFloat(RegExp.$1);
-			}
-			return rv;
-		}
-
 		function Coord(x, y) {
 			this.x = x;
 			this.y = y;
@@ -147,7 +134,6 @@
 			grid.Coords = Coords;
 			grid.tileWidth = settings.stage.width / settings.grid.width;
 			grid.tileHeight = settings.stage.height / settings.grid.height;
-			grid.IE = getInternetExplorerVersion();
 			this.checkPlacabilityOfTile = function (tile, calNumber) {
 				// Iterate across each free coordinates to test if the tile can be placed
 				// var
@@ -274,7 +260,6 @@
 
 			/**
 			 * Show tile one after the other.
-			 * No animation for IE8 and above
 			 */
 			this.showTile = function (tile, i) {
 				var tileTmpl, tileCtn, animSpeed = 50;
@@ -282,10 +267,8 @@
 					i = 0;
 				}
 				tileTmpl = $("#tileTpl").tmpl(tile[i]).appendTo('#moza');
-				/**
-				 * Remove animation for IE 8 and below because they cannot take it well. It't just to much for them.
-				 */
 
+				// todo: replace jquery anim by CSS3
 				tileTmpl.css('top', tile[i].y + 1 + '%').animate({
 					opacity: 'show',
 					top: tile[i].y + '%'
@@ -337,21 +320,17 @@
 					i = 0;
 				}
 
-				if (grid.IE < 9 && grid.IE > -1) {
-					//no tile animation for IE 6, 7 and 8. They cannot take it...
-				} else {
-					$('#moza .tile[data-id="' + tile[i].id + '"] img').animate(
-						{
-							opacity: 1
-						},
-						animSpeed,
-						function () {
-							if (i + 1 < tile.length) {
-								grid.showImage(tile, i + 1);
-							}
+				$('#moza .tile[data-id="' + tile[i].id + '"] img').animate(
+					{
+						opacity: 1
+					},
+					animSpeed,
+					function () {
+						if (i + 1 < tile.length) {
+							grid.showImage(tile, i + 1);
 						}
-					);
-				}
+					}
+				);
 			};
 
 			this.showImageAsync = this.async_memoize(function loadContentCategoryAsync(imageSrc, tile, callback) {
