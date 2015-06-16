@@ -82,7 +82,7 @@
 			if (navigator.appName == 'Microsoft Internet Explorer') {
 				var ua = navigator.userAgent;
 				var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-				if (re.exec(ua) != null)
+				if (re.exec(ua) !== null)
 					rv = parseFloat(RegExp.$1);
 			}
 			return rv;
@@ -150,7 +150,7 @@
 			grid.IE = getInternetExplorerVersion();
 			this.checkPlacabilityOfTile = function (tile, calNumber) {
 				// Iterate across each free coordinates to test if the tile can be placed
-				// var 
+				// var
 				var i, freeCoord, targets = [], t, coords;
 				for (i = 0; i < this.Coords.free.length; i += 1) {
 					freeCoord = this.Coords.free[i];
@@ -222,7 +222,7 @@
 					string = string.substring(0, len) + "...";
 				}
 				return string;
-			}
+			};
 
 			this.async_memoize = function (fn, hasher) {
 				var memo = {}, args, callback, key;
@@ -243,7 +243,7 @@
 						}]));
 					}
 				};
-			}
+			};
 
 			/**
 			 * Get all the info about the tile. (position, size, id, title, etc.)
@@ -299,7 +299,7 @@
 				//if(settings.activeId == tile[i].id) {
 				//	tileTmpl.find('.selected').show(0);
 				//}
-			}
+			};
 
 			/**
 			 * Define the size of the image inside the tile
@@ -324,7 +324,7 @@
 				size = {
 					width: imgW,
 					height: imgH
-				}
+				};
 				return size;
 			};
 
@@ -332,7 +332,7 @@
 			 * FadeIn the image one after the other.
 			 */
 			this.showImage = function (tile, i) {
-				var i, size = [], image, imageSize, animSpeed = 100;
+				var size = [], image, imageSize, animSpeed = 100;
 				if (i === undefined) {
 					i = 0;
 				}
@@ -352,7 +352,7 @@
 						}
 					);
 				}
-			}
+			};
 
 			this.showImageAsync = this.async_memoize(function loadContentCategoryAsync(imageSrc, tile, callback) {
 				$('#dImg').load(imageSrc, function (response, status, xhr) {

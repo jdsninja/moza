@@ -25,6 +25,11 @@ Put this jQuery Template in your header
 		</div>
 	</script>
 
+## Backlog
+
+- Convert jQuery plugin to vanilla javascript
+- Remove the dependencies with jQuery
+
 ## License
 This plugin is licensed under the MIT License (LICENSE.txt).
 
