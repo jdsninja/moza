@@ -29,6 +29,7 @@ Put this jQuery Template in your header
 
 - Convert jQuery plugin to vanilla javascript
 - Remove the dependencies with jQuery
+- Replace jQuery animation with a new lib. Here's a good candidate: http://julian.com/research/velocity/
 
 ## License
 This plugin is licensed under the MIT License (LICENSE.txt).
