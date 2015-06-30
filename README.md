@@ -27,7 +27,12 @@ Put this jQuery Template in your header
 
 ## Backlog
 
-- Convert jQuery plugin to vanilla javascript
+- Convert jQuery plugin to vanilla javascript.
+
+-- https://gist.github.com/turboMaCk/34bde8e744f5921be0c4
+-- http://stackoverflow.com/questions/14666608/how-to-write-a-javascript-plugin-without-jquery
+-- http://blog.millermedeiros.com/stop-writing-plugins-start-writing-components/
+
 - Remove the dependencies with jQuery
 - Replace jQuery animation with a new lib. Here's a good candidate: http://julian.com/research/velocity/
 
