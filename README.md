@@ -32,6 +32,13 @@ Put this jQuery Template in your header
 -- https://gist.github.com/turboMaCk/34bde8e744f5921be0c4
 -- http://stackoverflow.com/questions/14666608/how-to-write-a-javascript-plugin-without-jquery
 -- http://blog.millermedeiros.com/stop-writing-plugins-start-writing-components/
+-- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+-- http://addyosmani.com/resources/essentialjsdesignpatterns/book/#prototypepatternjavascript
+-- http://jstherightway.org/
+-- http://speakingjs.com/es5/ch17.html#_data_in_prototype_properties
+-- http://eloquentjavascript.net/
+-- http://shop.oreilly.com/product/9780596517748.do
+-- http://jsbooks.revolunet.com/
 
 - Remove the dependencies with jQuery
 - Replace jQuery animation with a new lib. Here's a good candidate: http://julian.com/research/velocity/
