@@ -16,7 +16,6 @@
   }
 
   Stage.prototype.build = function(){
-    console.log('build', this.width, this.height);
   };
 
   /**
@@ -76,7 +75,6 @@
 
 		// Clone the arrayY of all position and add it to free position array.
 		this.coords.free = _.clone(this.coords.all);
-		console.log(this.coords);
 		return this.coords;
 	};
 
@@ -150,17 +148,28 @@
 		this.totalRow = 4;
 	}
 
-	Moza.prototype.build = function() {
-		var myStage = new Stage(this.stageWidth, this.stageHeight);
-		myStage.build();
+	Moza.prototype.build = function(containerID) {
+		var container = document.getElementById(containerID);
+		//todo: check if the container exist before doing anything else.
+		if(container){
 
-		var myGrid = new Grid(this.totalCol, this.totalRow);
-		myGrid.build();
+			var containerWidth = container.offsetWidth;
+			var containerHeight = container.offsetHeight;
 
-		var myTile = new Tile();
+			var myStage = new Stage(containerWidth, containerHeight);
+			myStage.build();
+
+			var myGrid = new Grid(this.totalCol, this.totalRow);
+			myGrid.build();
+
+			var myTile = new Tile();
+		}else{
+			console.log('container not found');
+		}
+
 	};
 
 	var moza = new Moza();
-	moza.build();
+	moza.build("moza");
 
 })( window );
