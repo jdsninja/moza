@@ -25,7 +25,7 @@
   * @param {number} gRow - number of row
   */
   function Grid(gCol, gRow) {
-    this.column = gCol;
+    this.col = gCol;
     this.row = gRow;
 		this.coords = {
 			all: [],
@@ -58,47 +58,89 @@
 
   };
 
-	function Coord(x, y) {
-		this.x = x;
-		this.y = y;
-	}
+  Grid.prototype.getCoord = function(x, y) {
+      return {x: x, y: y};
+  };
+
+  Grid.prototype.setCoords = function() {
+    console.log('Set coords');
+      var i, j;
+      for (i = 0; i < this.col; i += 1) {
+        for (j = 0; j < this.row; j += 1) {
+          this.coords.all.push(this.getCoord(i, j));
+        }
+      }
+      // Clone the arrayY of all position and add it to free position array.
+      this.coords.free = _.clone(this.coords.all);
+  };
+
+  Grid.prototype.showCoords = function(container, containerWidth, containerHeight) {
+    // this.col this.row
+    var myCoords = this.coords.all;
+    for(var key in myCoords){
+      var dotCoord = myCoords[key];
+      console.log('===',dotCoord);
+
+        var left = containerWidth / this.col * dotCoord.x;
+        var top = containerHeight / this.row * dotCoord.y;
+      if(!dotCoord.x || !dotCoord.y || isNaN(left) || isNaN(top)){
+        console.log('here');
+      }else{
+          var div = document.createElement('div');
+
+          var container2 = document.getElementById("moza");
+          var node = document.createElement("DIV");
+
+          node.style.cssText = 'top:' + (top - 1) + 'px; left:' + (left -1) + 'px';
+
+          container2.appendChild(node);
+
+
+          console.log(left, top);
+      }
+
+    }
+  };
 
 	Grid.prototype.build = function() {
-		/*
-		* Build a multi dimensional array for all the position available
-		*/
-		var i, j;
-		for (i = 0; i < this.col; i += 1) {
-			for (j = 0; j < this.row; j += 1) {
-				this.coords.all.push(new Coord(i, j));
-			}
-		}
-
-		// Clone the arrayY of all position and add it to free position array.
-		this.coords.free = _.clone(this.coords.all);
-		console.log(this.coords);
-		return this.coords;
+    console.log('Grid build');
+    // Set coordonate
+	   this.setCoords();
+     console.log(this.coords);
+     this.showCoords();
 	};
 
   /**
   * Tile
   */
-  function Tile() {
-    this.sizeBig = {
-      maxAmount: 1,
-      col: 3,
-      row: 3
-    };
-    this.sizeMedium = {
-      maxAmount: 10,
-      col: 2,
-      row: 2
-    };
-    this.sizeSmall = {
-      maxAmount: 10,
-      col: 1,
-      row: 1
-    };
+  function Tiles(grid) {
+    this.coords = grid.coords;
+    this.size = {
+      big: {
+        maxAmount: 1,
+        col: 3,
+        row: 3
+      },
+      medium: {
+        maxAmount: 10,
+        col: 2,
+        row: 2
+      },
+      small: {
+        maxAmount: 10,
+        col: 1,
+        row: 1
+      }
+    }
+
+    this.items = {};
+    for (var i = 0, len = 40; i < len; i++) {
+      this.items.push({
+        id: i,
+        title: 'title',
+        img: ''
+      });
+    }
 
     /*
     var i, tile, tileSize;
@@ -109,8 +151,60 @@
     tile.coord = null;
     tile.targets = [];
     tile.target = [];
-
     */
+  }
+
+  Tiles.prototype.placeTiles = function() {
+    console.log('placeTiles', this.coords);
+    var i, j, tile, size = 'medium', tileOccupationCoords, tileQueue = [];
+    //$('#dImg').html('');
+    //settings.Items = articleList;
+    for (i = 0; i < this.items.length; i += 1) {
+      if (!_.isEmpty(this.coords.free)) {
+        if (i < this.size.big.maxAmount) {
+          size = 'big';
+        } else if (i < this.size.big.maxAmount + this.size.medium.maxAmount) {
+          size = 'medium';
+        } else {
+          size = 'small';
+        }
+        myTile = new Tile(size, i);
+        // get all the coord neded for that tile
+        tileOccupationCoords = myTile.getOccupationFromCoord(tile.target);
+        // remove the needed coords in the free array and put them in the taken array
+        for (j = 0; j < tileOccupationCoords.length; j += 1) {
+          grid.putFreeCoorToTakenCoor(tileOccupationCoords[j]);
+        }
+        //add info to queue
+        tileQueue[i] = grid.getTileInfos(myTile, this.items[i]);
+      }
+    }
+    grid.showTile(tileQueue);
+    grid.showImage(tileQueue);
+  };
+
+  Tiles.prototype.getTileInfos = function() {
+  };
+
+  Tiles.prototype.showTile = function() {
+  };
+
+  Tiles.prototype.getImageSize = function() {
+  };
+
+  Tiles.prototype.showImage = function() {
+  };
+
+  /**
+  * Tile
+  */
+  function Tile(tiles, size) {
+    this.size = size;
+    this.width = tiles.tile[size].col;
+    this.height = tiles.tile[size].row;
+    this.coord = null;
+    this.targets = [];
+    this.target = [];
   }
 
   Tile.prototype.getOccupationFromCoord = function(coord) {
@@ -125,19 +219,19 @@
     }
   };
 
-  Tile.prototype.placeTiles = function() {
-  };
-
-  Tile.prototype.getTileInfos = function() {
-  };
-
-  Tile.prototype.showTile = function() {
-  };
-
-  Tile.prototype.getImageSize = function() {
-  };
-
-  Tile.prototype.showImage = function() {
+  Tile.prototype.build = function() {
+    this.targets = grid.checkPlacabilityOfTile(this, callNumber);
+    if (_.isEmpty(this.targets)) {
+      for (tileSize in settings.tile) {
+        if (settings.tile[tileSize].width < this.width) {
+          tile.width = settings.tile[tileSize].width;
+          tile.height = settings.tile[tileSize].height;
+          tile.size = tileSize;
+          tile.targets = grid.checkPlacabilityOfTile(this, callNumber);
+        }
+      }
+    }
+    tile.target = this.targets[0];
   };
 
 	/**
@@ -150,17 +244,29 @@
 		this.totalRow = 4;
 	}
 
-	Moza.prototype.build = function() {
-		var myStage = new Stage(this.stageWidth, this.stageHeight);
+	Moza.prototype.build = function(containerId) {
+    // Set default value
+    var container = document.getElementById(containerId);
+    var containerWidth = container.clientWidth;
+    var containerHeight = container.clientHeight;
+    var col = 5;
+    var row = 4;
+
+    // Stage
+		var myStage = new Stage(containerWidth, containerHeight);
 		myStage.build();
 
-		var myGrid = new Grid(this.totalCol, this.totalRow);
+    // Grid
+		var myGrid = new Grid(col, row);
 		myGrid.build();
+		myGrid.showCoords(container, containerWidth, containerHeight);
 
-		var myTile = new Tile();
+    // Tile
+		//var myTiles = new Tiles(myGrid);
+  //  myTiles.placeTiles();
 	};
 
 	var moza = new Moza();
-	moza.build();
+	moza.build("moza");
 
 })( window );
