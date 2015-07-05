@@ -17,6 +17,7 @@
     "gulp-less": "^3.0.3",
     "gulp-open": "^0.3.2",
     "gulp-watch": "^4.2.4",
-    "debug": "~2.2.0"
+    "debug": "~2.2.0",
+    "gulp-debug": "~2.0.1"
   }
 }
