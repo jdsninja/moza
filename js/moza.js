@@ -9,12 +9,12 @@
         row: 3
       },
       medium: {
-        maxAmount: 5,
+        maxAmount: 20,
         col: 2,
         row: 2
       },
       small: {
-        maxAmount: 50,
+        maxAmount: 100,
         col: 1,
         row: 1
       }
@@ -26,16 +26,16 @@
   * @param {number} gCol - number of column
   * @param {number} gRow - number of row
   */
-  function Grid(containerId, sWidth, sHeight, gCol, gRow) {
-    this.containerId = containerId;
-    this.width = sWidth;
-    this.height = sHeight;
-    this.col = gCol;
-    this.row = gRow;
-    this.widthSpacer = 2 * 100 / sWidth;
-    this.heightSpacer = 2 * 100 / sHeight;
-    this.tileWidth = sWidth / gCol;
-    this.tileHeight = sHeight / gRow;
+  function Grid() {
+    this.containerId = null;
+    this.width = null;
+    this.height = null;
+    this.col = null;
+    this.row = null;
+    this.widthSpacer = null;
+    this.heightSpacer = null;
+    this.tileWidth = null;
+    this.tileHeight = null;
 		this.coords = {
 			all: [],
 			free: [],
@@ -145,8 +145,18 @@
     });
   };
 
-	Grid.prototype.build = function() {
-    console.log('Grid build');
+	Grid.prototype.setupGrid = function(containerId, sWidth, sHeight, gCol, gRow) {
+    console.log('Grid setup');
+    this.containerId = containerId;
+    this.width = sWidth;
+    this.height = sHeight;
+    this.col = gCol;
+    this.row = gRow;
+    this.widthSpacer = 2 * 100 / sWidth;
+    this.heightSpacer = 2 * 100 / sHeight;
+    this.tileWidth = sWidth / gCol;
+    this.tileHeight = sHeight / gRow;
+
     // Set coordonate
 	  this.setCoords();
     this.showCoords();
@@ -155,9 +165,11 @@
   /**
   * Tile
   */
-  function Tiles(grid) {
-    this.grid = grid;
+  Tiles.prototype = new Grid(); // inherit from Grid
+  Tiles.prototype.constructor = Tiles;
+  function Tiles() {
     this.items = [];
+    this.tileQueue = [];
     for (var i = 0, len = 40; i < len; i++) {
       this.items.push({
         id: i,
@@ -168,7 +180,9 @@
   }
 
   Tiles.prototype.showTile = function(tileQueue) {
-    var container = document.getElementById(this.grid.containerId);
+    console.log('show tile', tileQueue);
+    //var container = document.getElementById(this.grid.containerId);
+    var container = document.getElementById(this.containerId);
     tileQueue.forEach((item, index) => {
       var node = document.createElement("DIV");
       node.style.cssText = `top: ${item.y}%; left: ${item.x}%; width: ${item.width}%; height: ${item.height}%`;
@@ -177,18 +191,12 @@
     });
   };
 
-  Tiles.prototype.getImageSize = function() {
-  };
-
-  Tiles.prototype.showImage = function() {
-  };
-
-  Tiles.prototype.build = function() {
+  Tiles.prototype.buildTiles = function() {
     console.log('Tiles build');
-    var i, j, tile, size = 'medium', tileOccupationCoords, tileQueue = [];
+    var i, j, tile, size = 'medium', tileOccupationCoords;
 
     this.items.forEach((item, index) => {
-      if(this.grid.coords.free.length > 0) {
+      if(this.coords.free.length > 0) {
         if (index < constants.TILE_SIZE['big'].maxAmount) {
           size = 'big';
         } else if (index < constants.TILE_SIZE['big'].maxAmount + constants.TILE_SIZE['medium'].maxAmount) {
@@ -199,28 +207,27 @@
         item.size = size;
         item.queue = index;
 
-        var myTile = new Tile(this.grid, item);
+        var myTile = new Tile(this, item);
+
         // Get all the coord neded for that tile
-        tileOccupationCoords = this.grid.getOccupationFromCoord(myTile.col, myTile.row, myTile.target);
+        tileOccupationCoords = this.getOccupationFromCoord(myTile.col, myTile.row, myTile.target);
 
         // Remove the needed coords in the free array and put them in the taken array
         if(tileOccupationCoords !== undefined){
           for (j = 0; j < tileOccupationCoords.length; j += 1) {
-            this.grid.putFreeCoorToTakenCoor(tileOccupationCoords[j]);
+            this.putFreeCoorToTakenCoor(tileOccupationCoords[j]);
           }
-          tileQueue.push(myTile.getTileInfos());
+          this.tileQueue.push(myTile.getTileInfos());
         }
       }
     });
-
-    this.showTile(tileQueue);
-    //grid.showImage(tileQueue);
   };
 
   /**
   * Tile
   */
   function Tile(grid, params) {
+    console.log(this);
     this.grid = grid;
     this.size = params.size;
     this.col = constants.TILE_SIZE[params.size].col;
@@ -246,7 +253,8 @@
   Tile.prototype.setTarget = function() {
     console.log('Tile setTarget', this.targets);
     if (!this.targets || this.targets.length === 0) {
-      for(var size in constants.TILE_SIZE){
+      for(size of constants.TILE_SIZE){
+        console.log('size');
         if (constants.TILE_SIZE[size].col < this.col) {
           this.col = constants.TILE_SIZE[size].col;
           this.row = constants.TILE_SIZE[size].row;
@@ -266,6 +274,8 @@
 	/**
 	* Moza
 	*/
+  Moza.prototype = new Tiles(); // inherit from Tiles that inherit from Grid
+  Moza.prototype.constructor = Moza;
 	function Moza() {
     this.container = null;
 	}
@@ -281,14 +291,11 @@
     this.container = document.getElementById(containerId);
     var containerWidth = this.container.clientWidth;
     var containerHeight = this.container.clientHeight;
-
-    // Stage
-		var myGrid = new Grid(containerId, containerWidth, containerHeight, col, row);
-		myGrid.build();
-
-    // Tiles
-		var myTiles = new Tiles(myGrid);
-    myTiles.build();
+    // Setup the grid
+    this.setupGrid(containerId, containerWidth, containerHeight, col, row);
+    // Build the tiles
+    this.buildTiles();
+    this.showTile(this.tileQueue);
 	};
 
 	var moza = new Moza();
