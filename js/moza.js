@@ -27,13 +27,13 @@
   * @param {number} gRow - number of row
   */
   function Grid() {
-    this.containerId = null;
-    this.width = null;
-    this.height = null;
+    this.container = null;
+    this.gridWidth = null;
+    this.gridHeight = null;
     this.col = null;
     this.row = null;
-    this.widthSpacer = null;
-    this.heightSpacer = null;
+    this.gridWidthSpacer = null;
+    this.gridHeightSpacer = null;
     this.tileWidth = null;
     this.tileHeight = null;
 		this.coords = {
@@ -84,7 +84,7 @@
     var i, freeCoord, targets = [], t, coords;
     for (i = 0; i < this.coords.free.length; i += 1) {
       freeCoord = this.coords.free[i];
-      if ((freeCoord.x + totalCol) * this.tileWidth <= this.width && (freeCoord.y + totalRow) * this.tileHeight <= this.height) {
+      if ((freeCoord.x + totalCol) * this.tileWidth <= this.gridWidth && (freeCoord.y + totalRow) * this.tileHeight <= this.gridHeight) {
         coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
         if (this.checkAvailabilityOfCoordsFromCoord(coords)) {
           targets.push(freeCoord);
@@ -135,27 +135,26 @@
   */
   Grid.prototype.showCoords = function() {
     console.log('Grid showCoords');
-    var container = document.getElementById(this.containerId);
     this.coords.all.forEach(coord => {
-      var left = this.width / this.col * coord.x;
-      var top = this.height / this.row * coord.y;
+      var left = this.gridWidth / this.col * coord.x;
+      var top = this.gridHeight / this.row * coord.y;
       var node = document.createElement("DIV");
       node.style.cssText = `top: ${top - 2}px; left: ${left - 2}px`;
-      container.appendChild(node);
+      this.container.appendChild(node);
     });
   };
 
-	Grid.prototype.setupGrid = function(containerId, sWidth, sHeight, gCol, gRow) {
+	Grid.prototype.setupGrid = function(containerId, gCol, gRow) {
     console.log('Grid setup');
-    this.containerId = containerId;
-    this.width = sWidth;
-    this.height = sHeight;
-    this.col = gCol;
+    this.container = document.getElementById(containerId);
+    this.gridWidth = this.container.clientWidth;
+    this.gridHeight = this.container.clientHeight;
+    this.col = gCol;//todo: this should be more specific. it will help understand the code when we call this from a sub function.
     this.row = gRow;
-    this.widthSpacer = 2 * 100 / sWidth;
-    this.heightSpacer = 2 * 100 / sHeight;
-    this.tileWidth = sWidth / gCol;
-    this.tileHeight = sHeight / gRow;
+    this.gridWidthSpacer = 2 * 100 / this.gridWidth;
+    this.gridHeightSpacer = 2 * 100 / this.gridHeight;
+    this.tileWidth = this.gridWidth / gCol; //todo: find a more specific name for this. its more a zone or area then tile
+    this.tileHeight = this.gridHeight / gRow;
 
     // Set coordonate
 	  this.setCoords();
@@ -179,15 +178,15 @@
     }
   }
 
-  Tiles.prototype.showTile = function(tileQueue) {
-    console.log('show tile', tileQueue);
+  Tiles.prototype.showTile = function() {
+    console.log('show tile');
     //var container = document.getElementById(this.grid.containerId);
-    var container = document.getElementById(this.containerId);
-    tileQueue.forEach((item, index) => {
+
+    this.tileQueue.forEach((item, index) => {
       var node = document.createElement("DIV");
       node.style.cssText = `top: ${item.y}%; left: ${item.x}%; width: ${item.width}%; height: ${item.height}%`;
       node.className = 'tile';
-      container.appendChild(node);
+      this.container.appendChild(node);
     });
   };
 
@@ -242,10 +241,10 @@
     console.log('Tile getTileInfos');
     return {
       size: this.size,
-      x: this.target.x * this.grid.tileWidth * 100 / this.grid.width,
-      y: this.target.y * this.grid.tileHeight * 100 / this.grid.height,
-      width: (this.col * 100 / this.grid.col) - this.grid.widthSpacer,
-      height: (this.row * 100 / this.grid.row) - this.grid.heightSpacer,
+      x: this.target.x * this.grid.tileWidth * 100 / this.grid.gridWidth,
+      y: this.target.y * this.grid.tileHeight * 100 / this.grid.gridHeight,
+      width: (this.col * 100 / this.grid.col) - this.grid.gridWidthSpacer,
+      height: (this.row * 100 / this.grid.row) - this.grid.gridHeightSpacer,
       id: this.callNumber
     };
   };
@@ -287,15 +286,13 @@
   * @param {number} row
   */
 	Moza.prototype.build = function(containerId, col, row) {
-    // Get container info
-    this.container = document.getElementById(containerId);
-    var containerWidth = this.container.clientWidth;
-    var containerHeight = this.container.clientHeight;
     // Setup the grid
-    this.setupGrid(containerId, containerWidth, containerHeight, col, row);
-    // Build the tiles
+    this.setupGrid(containerId, col, row);
+
+    // Build the tiles. At this point we will have the size and position of all the tiles.
     this.buildTiles();
-    this.showTile(this.tileQueue);
+    // This will parse the
+    this.showTile();
 	};
 
 	var moza = new Moza();
