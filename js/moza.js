@@ -36,11 +36,11 @@
     this.gridHeightSpacer = null;
     this.tileWidth = null;
     this.tileHeight = null;
-		this.coords = {
-			all: [],
-			free: [],
-			taken: []
-		};
+    this.coords = {
+      all: [],
+      free: [],
+      taken: []
+    };
   }
 
   Grid.prototype.checkAvailabilityOfCoordsFromCoord = function(coords) {
@@ -144,7 +144,7 @@
     });
   };
 
-	Grid.prototype.setupGrid = function(containerId, gCol, gRow) {
+  Grid.prototype.setupGrid = function(containerId, gCol, gRow) {
     console.log('Grid setup');
     this.container = document.getElementById(containerId);
     this.gridWidth = this.container.clientWidth;
@@ -157,9 +157,9 @@
     this.tileHeight = this.gridHeight / gRow;
 
     // Set coordonate
-	  this.setCoords();
+    this.setCoords();
     this.showCoords();
-	};
+  };
 
   /**
   * Tile
@@ -270,14 +270,14 @@
     this.setTarget();
   };
 
-	/**
-	* Moza
-	*/
+  /**
+  * Moza
+  */
   Moza.prototype = new Tiles(); // inherit from Tiles that inherit from Grid
   Moza.prototype.constructor = Moza;
-	function Moza() {
+  function Moza() {
     this.container = null;
-	}
+  }
 
   /*
   * Build
@@ -285,7 +285,7 @@
   * @param {number} col
   * @param {number} row
   */
-	Moza.prototype.build = function(containerId, col, row) {
+  Moza.prototype.build = function(containerId, col, row) {
     // Setup the grid
     this.setupGrid(containerId, col, row);
 
@@ -293,9 +293,9 @@
     this.buildTiles();
     // This will parse the
     this.showTile();
-	};
+  };
 
-	var moza = new Moza();
-	moza.build("moza", 10, 10);
+  var moza = new Moza();
+  moza.build("moza", 10, 10);
 
 })( window );
