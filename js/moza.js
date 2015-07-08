@@ -159,7 +159,7 @@
       left = left * 100 / this.gridWidth;
       top = top * 100 / this.gridHeight;
       var node = document.createElement("DIV");
-      node.style.cssText = `top: ${top-.5}%; left: ${left-.2}%`;
+      node.style.cssText = `top: ${top-0.5}%; left: ${left-0.2}%`;
       this.container.appendChild(node);
     });
   };
@@ -226,9 +226,9 @@
     var size = null;
     this.items.forEach((item, index) => {
       if(this.coords.free.length > 0) {
-        if (index < constants.TILE_SIZE['big'].maxAmount) {
+        if (index < constants.TILE_SIZE.big.maxAmount) {
           size = 'big';
-        } else if (index < constants.TILE_SIZE['big'].maxAmount + constants.TILE_SIZE['medium'].maxAmount) {
+        } else if (index < constants.TILE_SIZE.big.maxAmount + constants.TILE_SIZE.medium.maxAmount) {
           size = 'medium';
         } else {
           size = 'small';
@@ -291,7 +291,7 @@
   Tile.prototype.resizeTileIfDosentFit = function() {
     console.log('Tile: Set Target');
     if (!this.targets || this.targets.length === 0) {
-      for(size of constants.TILE_SIZE){
+      for(var size of constants.TILE_SIZE){
         if (constants.TILE_SIZE[size].col < this.col) {
           this.col = constants.TILE_SIZE[size].col;
           this.row = constants.TILE_SIZE[size].row;
