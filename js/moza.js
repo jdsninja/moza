@@ -4,22 +4,22 @@
   var constants = {
     'TILE_SIZE': {
       big: {
-        maxAmount: 2,
+        maxAmount: 5,
         col: 3,
-        row: 3
+        row: 2
       },
       medium: {
-        maxAmount: 20,
+        maxAmount: 1,
         col: 2,
         row: 2
       },
       small: {
-        maxAmount: 100,
+        maxAmount: 1,
         col: 1,
         row: 1
       }
     }
-  }
+  };
 
   /**
   * Grid
@@ -43,34 +43,36 @@
     };
   }
 
+  /**
+  * checkAvailabilityOfCoordsFromCoord
+  * @param {object} coords
+  */
   Grid.prototype.checkAvailabilityOfCoordsFromCoord = function(coords) {
-    var i, y = 0, j;
-    for (j = 0; j < coords.length; j += 1) {
-      i = this.coords.free.length;
+    var y = 0;
+    coords.forEach(coord => {
+      var i = this.coords.free.length;
       while (i--) {
-        if (this.coords.free[i].x === coords[j].x && this.coords.free[i].y === coords[j].y) {
-          y += 1;
+        if (this.coords.free[i].x === coord.x && this.coords.free[i].y === coord.y) {
+          y++;
         }
       }
-    }
-    if (coords.length === y) {
-      return true;
-    } else {
-      return false;
-    }
+    });
+    return coords.length === y;
   };
 
   /*
-  *
+  * getOccupationFromCoord
   * This will get an array with all the point occuped by the tile
+  * @param {number} totalCol
+  * @param {number} totalRow
+  * @param {object} coord
   */
   Grid.prototype.getOccupationFromCoord = function(totalCol, totalRow, coord) {
     //this.coords.free
     var i, j, coords = [];
-    if (coord !== undefined) {
+    if (coord) {
       for (i = 0; i < totalCol; i = i + 1) {
         for (j = 0; j < totalRow; j = j + 1) {
-          //console.log(i + coord.x, j + coord.y);
           coords.push(this.getCoord(i + coord.x, j + coord.y));
         }
       }
@@ -78,51 +80,66 @@
     }
   };
 
+  /*
+  * checkPlacabilityOfTile
+  * Iterate across each free coordinates to test if the tile can be placed
+  * @param {number} totalCol
+  * @param {number} totalRow
+  * @param {number} callNumber
+  */
   Grid.prototype.checkPlacabilityOfTile = function(totalCol, totalRow, callNumber) {
     console.log('checkPlacabilityOfTile');
-    //Iterate across each free coordinates to test if the tile can be placed
-    var i, freeCoord, targets = [], t, coords;
-    for (i = 0; i < this.coords.free.length; i += 1) {
-      freeCoord = this.coords.free[i];
+    var targets = [];
+    this.coords.free.forEach(freeCoord => {
       if ((freeCoord.x + totalCol) * this.tileWidth <= this.gridWidth && (freeCoord.y + totalRow) * this.tileHeight <= this.gridHeight) {
-        coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
+        var coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
         if (this.checkAvailabilityOfCoordsFromCoord(coords)) {
           targets.push(freeCoord);
         }
       }
-    }
-    console.log('targets', targets);
-    //if (settings.random === true ) {
-      targets = this.shuffle(targets);
-      console.log('targets', targets);
-    //}
-    return targets;
+    });
+    return this.shuffle(targets);
   };
 
+  /*
+  * putFreeCoorToTakenCoor
+  * @param {object} coord
+  */
   Grid.prototype.putFreeCoorToTakenCoor = function(coord) {
-    var i;
-    for (i = 0; i < this.coords.free.length; i += 1) {
-      if (this.coords.free[i].x === coord.x && this.coords.free[i].y === coord.y) {
-        this.coords.free.splice(i, 1);
+    this.coords.free.forEach((myCoord, index) => {
+      // todo: clean this up
+      if (myCoord.x === coord.x && myCoord.y === coord.y) {
+        this.coords.free.splice(index, 1);
       }
-    }
+    });
     this.coords.taken.push(coord);
   };
 
+  /*
+  * shuffle
+  * @param {object} o
+  */
   Grid.prototype.shuffle = function(o) {
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-      return o;
+    return o;
   };
 
+  /*
+  * getCoord
+  * @param {number} x
+  * @param {number} y
+  */
   Grid.prototype.getCoord = function(x, y) {
-      return {x: x, y: y};
+      return {x, y};
   };
 
+  /*
+  * setCoords
+  */
   Grid.prototype.setCoords = function() {
     console.log('Grid setCoords');
-    var i, j;
-    for (i = 0; i < this.col; i += 1) {
-      for (j = 0; j < this.row; j += 1) {
+    for (var i = 0; i < this.col; i++) {
+      for (var j = 0; j < this.row; j++) {
         this.coords.all.push(this.getCoord(i, j));
       }
     }
@@ -131,21 +148,31 @@
   };
 
   /*
-  * Show coords: This will show black dots for each coordonate
+  * Show coords
+  * This will show black dots for each coordonate
   */
   Grid.prototype.showCoords = function() {
     console.log('Grid showCoords');
     this.coords.all.forEach(coord => {
       var left = this.gridWidth / this.col * coord.x;
       var top = this.gridHeight / this.row * coord.y;
+      left = left * 100 / this.gridWidth;
+      top = top * 100 / this.gridHeight;
       var node = document.createElement("DIV");
-      node.style.cssText = `top: ${top - 2}px; left: ${left - 2}px`;
+      node.style.cssText = `top: ${top-.5}%; left: ${left-.2}%`;
       this.container.appendChild(node);
     });
   };
 
-  Grid.prototype.setupGrid = function(containerId, gCol, gRow) {
+  /*
+  * buildGrid
+  * @param {string} containerId
+  * @param {number} gCol
+  * @param {number} gRow
+  */
+  Grid.prototype.buildGrid = function(containerId, gCol, gRow) {
     console.log('Grid setup');
+    this.containerId = containerId;
     this.container = document.getElementById(containerId);
     this.gridWidth = this.container.clientWidth;
     this.gridHeight = this.container.clientHeight;
@@ -178,10 +205,11 @@
     }
   }
 
+  /*
+  * showTile
+  */
   Tiles.prototype.showTile = function() {
-    console.log('show tile');
-    //var container = document.getElementById(this.grid.containerId);
-
+    console.log('Tiles: Show Tile');
     this.tileQueue.forEach((item, index) => {
       var node = document.createElement("DIV");
       node.style.cssText = `top: ${item.y}%; left: ${item.x}%; width: ${item.width}%; height: ${item.height}%`;
@@ -190,10 +218,12 @@
     });
   };
 
+  /*
+  * buildTiles
+  */
   Tiles.prototype.buildTiles = function() {
-    console.log('Tiles build');
-    var i, j, tile, size = 'medium', tileOccupationCoords;
-
+    console.log('Tiles: Build Tiles');
+    var size = null;
     this.items.forEach((item, index) => {
       if(this.coords.free.length > 0) {
         if (index < constants.TILE_SIZE['big'].maxAmount) {
@@ -209,13 +239,14 @@
         var myTile = new Tile(this, item);
 
         // Get all the coord neded for that tile
-        tileOccupationCoords = this.getOccupationFromCoord(myTile.col, myTile.row, myTile.target);
+        // todo: This part should be inside the tile itself.
+        var tileOccupationCoords = this.getOccupationFromCoord(myTile.col, myTile.row, myTile.target);
 
         // Remove the needed coords in the free array and put them in the taken array
-        if(tileOccupationCoords !== undefined){
-          for (j = 0; j < tileOccupationCoords.length; j += 1) {
-            this.putFreeCoorToTakenCoor(tileOccupationCoords[j]);
-          }
+        if(tileOccupationCoords){
+          tileOccupationCoords.forEach(coords => {
+            this.putFreeCoorToTakenCoor(coords);
+          });
           this.tileQueue.push(myTile.getTileInfos());
         }
       }
@@ -224,9 +255,10 @@
 
   /**
   * Tile
+  * @param {object} grid
+  * @param {object} params
   */
   function Tile(grid, params) {
-    console.log(this);
     this.grid = grid;
     this.size = params.size;
     this.col = constants.TILE_SIZE[params.size].col;
@@ -237,8 +269,11 @@
     this.target = this.targets ? this.targets[0] : null;
   }
 
+  /*
+  * getTileInfos
+  */
   Tile.prototype.getTileInfos = function() {
-    console.log('Tile getTileInfos');
+    console.log('Tile: Get Tile Infos');
     return {
       size: this.size,
       x: this.target.x * this.grid.tileWidth * 100 / this.grid.gridWidth,
@@ -249,11 +284,14 @@
     };
   };
 
-  Tile.prototype.setTarget = function() {
-    console.log('Tile setTarget', this.targets);
+  /*
+  * resizeTileIfDosentFit
+  */
+  // todo: use it. its currently not used at all...
+  Tile.prototype.resizeTileIfDosentFit = function() {
+    console.log('Tile: Set Target');
     if (!this.targets || this.targets.length === 0) {
       for(size of constants.TILE_SIZE){
-        console.log('size');
         if (constants.TILE_SIZE[size].col < this.col) {
           this.col = constants.TILE_SIZE[size].col;
           this.row = constants.TILE_SIZE[size].row;
@@ -264,10 +302,12 @@
     }
   };
 
-  Tile.prototype.build = function(startingPoint) {
-    console.log('Tile build');
-    //this.target = startingPoint[0];
-    this.setTarget();
+  /*
+  * Build
+  */
+  Tile.prototype.build = function() {
+    console.log('Tile: Build');
+    this.resizeTileIfDosentFit();
   };
 
   /**
@@ -287,8 +327,7 @@
   */
   Moza.prototype.build = function(containerId, col, row) {
     // Setup the grid
-    this.setupGrid(containerId, col, row);
-
+    this.buildGrid(containerId, col, row);
     // Build the tiles. At this point we will have the size and position of all the tiles.
     this.buildTiles();
     // This will parse the
@@ -296,6 +335,5 @@
   };
 
   var moza = new Moza();
-  moza.build("moza", 10, 10);
-
+  moza.build("moza", 6, 6);
 })( window );

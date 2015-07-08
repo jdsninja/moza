@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
   connect = require('gulp-connect'),
   open = require('gulp-open'),
-  watch = require('gulp-watch');
+  watch = require('gulp-watch'),
+  babel = require("gulp-babel");
 var port = 8081;
 
 gulp.task('connect', function () {
@@ -25,8 +26,14 @@ gulp.task('js', function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['./js/*.js'], ['js']);
+  gulp.watch(['./js/*.js'], ['js', 'babel']);
+});
+
+gulp.task("babel", function () {
+  return gulp.src("./js/*.js")
+    .pipe(babel())
+    .pipe(gulp.dest("dist/js"));
 });
 
 
-gulp.task('default', ['connect', 'open', 'watch']);
+gulp.task('default', ['babel', 'connect', 'open', 'watch']);
