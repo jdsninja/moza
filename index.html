@@ -11,25 +11,27 @@
     #69cecd;
     #8fdbda; //lighter green
     */
-    #moza{
+    .moza{
       border: 2px solid #69cecd;
       width: 400px;
       height: 400px;
       position: relative;
+      float:left;
+      margin-right:10px;
     }
-    #moza div{
+    .moza div{
       width: 3px;
       height: 3px;
       background:#69cecd;
       position:absolute;
     }
-    #moza .tile{
+    .moza .tile{
       background-color: #8fdbda;
     }
    </style>
 </head>
 <body>
-	<div id="moza"></div>
+	<div id="moza" class="moza"></div>
 	<script src="dist/js/moza.js"></script>
 </body>
 </html>
