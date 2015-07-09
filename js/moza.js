@@ -326,6 +326,32 @@
     };
   };
 
+  /*
+  * resizeTileIfDosentFit
+  */
+  // todo: use it. its currently not used at all...
+  Tile.prototype.resizeTileIfDosentFit = function() {
+    console.log('Tile: Set Target');
+    if (!this.targets || this.targets.length === 0) {
+      for(var size of constants.TILE_SIZE){
+        if (constants.TILE_SIZE[size].col < this.col) {
+          this.col = constants.TILE_SIZE[size].col;
+          this.row = constants.TILE_SIZE[size].row;
+          this.size = size;
+          this.targets = this.grid.checkPlacabilityOfTile(this.col, this.row, this.callNumber);
+        }
+      }
+    }
+  };
+
+  /*
+  * Build
+  */
+  Tile.prototype.build = function() {
+    console.log('Tile: Build');
+    this.resizeTileIfDosentFit();
+  };
+
   /**
   * Moza
   */
