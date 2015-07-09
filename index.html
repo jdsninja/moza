@@ -31,7 +31,13 @@
    </style>
 </head>
 <body>
-	<div id="moza" class="moza"></div>
-	<script src="dist/js/moza.js"></script>
+  <div id="moza" class="moza"></div>
+  <script src="dist/js/moza.js"></script>
+  <script type="text/javascript">
+    (function() {
+      var moza = new Moza();
+      moza.build("moza", 6, 6);
+    })();
+  </script>
 </body>
 </html>

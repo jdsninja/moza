@@ -376,6 +376,5 @@
     this.showTile();
   };
 
-  var moza = new Moza();
-  moza.build("moza", 6, 6);
+  window.Moza = Moza;
 })( window );
