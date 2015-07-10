@@ -1,0 +1,23 @@
+$color1: #297474; //darker green
+$color2: #369b9a;
+$color3: #44c0bf;
+$color4: #69cecd;
+$color5: #8fdbda; //lighter green
+
+.moza{
+  border: 2px solid $color4;
+  width: 400px;
+  height: 400px;
+  position: relative;
+  float: left;
+  margin-right: 10px;
+  div{
+    width: 3px;
+    height: 3px;
+    background: $color4;
+    position: absolute;
+  }
+  .tile{
+    background-color: $color5;
+  }
+}
