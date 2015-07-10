@@ -4,6 +4,8 @@ var gulp = require('gulp'),
   watch = require('gulp-watch'),
   babel = require("gulp-babel");
 var port = 8081;
+var src = './src';
+var dist = './dist';
 
 gulp.task('connect', function () {
   connect.server({
@@ -21,18 +23,18 @@ gulp.task('open', function(){
 });
 
 gulp.task('js', function () {
-  gulp.src('./js/*.js')
+  gulp.src(src + '/js/*.js')
     .pipe(connect.reload());
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['./js/*.js'], ['js', 'babel']);
+  gulp.watch([src + '/js/*.js'], ['js', 'babel']);
 });
 
 gulp.task("babel", function () {
   return gulp.src("./js/*.js")
     .pipe(babel())
-    .pipe(gulp.dest("dist/js"));
+    .pipe(gulp.dest(dist + "/js"));
 });
 
 
