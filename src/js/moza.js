@@ -2,29 +2,46 @@
 ;(function( window ) {
 
   var constants = {
+    // The first tile size have the priority.
+    // That mean will parse the tile size from top to bottom.
+    // Its better to add the biggest tile at the top.
     'TILE_SIZE': {
-      big: {
+      XXL: {
+        maxAmount: 1,
+        col: 5,
+        row: 5
+      },
+      XL: {
         maxAmount: 2,
+        col: 4,
+        row: 4
+      },
+      L: {
+        maxAmount: 10,
         col: 3,
         row: 2
       },
-      medium: {
-        maxAmount: 3,
+      M: {
+        maxAmount: 10,
         col: 2,
         row: 2
       },
-      small: {
-        maxAmount: 20,
+      S: {
+        maxAmount: 10,
+        col: 2,
+        row: 1
+      },
+      XS: {
+        maxAmount: 50,
         col: 1,
         row: 1
       }
     }
   };
 
+
   /**
   * Grid
-  * @param {number} gCol - number of column
-  * @param {number} gRow - number of row
   */
   function Grid() {
     this.container = null;
@@ -44,13 +61,13 @@
   }
 
   /**
-  * checkAvailabilityOfCoordsFromCoord
+  * Check availability of coords from coord
   * @param {object} coords
   */
   Grid.prototype.checkAvailabilityOfCoordsFromCoord = function(coords) {
     var y = 0;
     coords.forEach(coord => {
-      var i = this.coords.free.length;
+      let i = this.coords.free.length;
       while (i--) {
         if (this.coords.free[i].x === coord.x && this.coords.free[i].y === coord.y) {
           y++;
@@ -61,7 +78,7 @@
   };
 
   /*
-  * getOccupationFromCoord
+  * Get occupation from coord
   * This will get an array with all the point occuped by the tile
   * @param {number} totalCol
   * @param {number} totalRow
@@ -69,38 +86,49 @@
   */
   Grid.prototype.getOccupationFromCoord = function(totalCol, totalRow, coord) {
     //this.coords.free
-    var i, j, coords = [];
+    var coords = [];
     if (coord) {
-      for (i = 0; i < totalCol; i = i + 1) {
-        for (j = 0; j < totalRow; j = j + 1) {
+      for (let i = 0; i < totalCol; i++) {
+        for (let j = 0; j < totalRow; j++) {
           coords.push(this.getCoord(i + coord.x, j + coord.y));
         }
       }
       return coords;
     }
+    // todo: should return something anyway
   };
 
   /*
-  * checkPlacabilityOfTile
+  * Get new tileArea
   * Iterate across each free coordinates to test if the tile can be placed
-  * @param {number} totalCol
-  * @param {number} totalRow
+  * @param {string} tileSize
+  * @returns {array|undefined}
   */
-  Grid.prototype.checkPlacabilityOfTile = function(totalCol, totalRow) {
-    var targets = [];
+  Grid.prototype.getNewTileArea = function(tileSize) {
+    var targets = [],
+       totalCol = constants.TILE_SIZE[tileSize].col,
+       totalRow = constants.TILE_SIZE[tileSize].row;
     this.coords.free.forEach(freeCoord => {
-      if ((freeCoord.x + totalCol) * this.tileWidth <= this.gridWidth && (freeCoord.y + totalRow) * this.tileHeight <= this.gridHeight) {
-        var coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
+      // make sure the tile ending end don't go futher then the grid edge
+      let tileRightEdge = (freeCoord.x + totalCol) * this.tileWidth,
+          tileBottomEdge = (freeCoord.y + totalRow) * this.tileHeight;
+      if (tileRightEdge <= this.gridWidth && tileBottomEdge <= this.gridHeight) {
+        // We jsut fond a good spot for this tile.
+        // It's time to check if the area is clear.
+        let coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
         if (this.checkAvailabilityOfCoordsFromCoord(coords)) {
           targets.push(freeCoord);
         }
       }
     });
+    // If the targets is empty that mean 2 things:
+    // - the tile was to big
+    // - the tile had the right size but no area was available
     return targets.length > 0 ? this.shuffle(targets) : undefined;
   };
 
   /*
-  * putFreeCoorToTakenCoor
+  * Put free coor to taken coor
   * @param {object} coord
   */
   Grid.prototype.putFreeCoorToTakenCoor = function(coord) {
@@ -115,16 +143,16 @@
   };
 
   /*
-  * shuffle
+  * Shuffle
   * @param {object} o
   */
   Grid.prototype.shuffle = function(o) {
-    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    for(let j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
     return o;
   };
 
   /*
-  * getCoord
+  * Get coord
   * @param {number} x
   * @param {number} y
   */
@@ -133,12 +161,11 @@
   };
 
   /*
-  * setCoords
+  * Set coords
   */
   Grid.prototype.setCoords = function() {
-    console.log('Grid setCoords');
-    for (var i = 0; i < this.col; i++) {
-      for (var j = 0; j < this.row; j++) {
+    for (let i = 0; i < this.col; i++) {
+      for (let j = 0; j < this.row; j++) {
         this.coords.all.push(this.getCoord(i, j));
       }
     }
@@ -151,26 +178,24 @@
   * This will show black dots for each coordonate
   */
   Grid.prototype.showCoords = function() {
-    console.log('Grid showCoords');
     this.coords.all.forEach(coord => {
-      var left = this.gridWidth / this.col * coord.x;
-      var top = this.gridHeight / this.row * coord.y;
+      let left = this.gridWidth / this.col * coord.x;
+      let top = this.gridHeight / this.row * coord.y;
       left = left * 100 / this.gridWidth;
       top = top * 100 / this.gridHeight;
-      var node = document.createElement("DIV");
+      let node = document.createElement("DIV");
       node.style.cssText = `top: ${top-0.5}%; left: ${left-0.2}%`;
       this.container.appendChild(node);
     });
   };
 
   /*
-  * buildGrid
+  * Build grid
   * @param {string} containerId
   * @param {number} gCol
   * @param {number} gRow
   */
   Grid.prototype.buildGrid = function(containerId, gCol, gRow) {
-    console.log('Grid setup');
     this.containerId = containerId;
     this.container = document.getElementById(containerId);
     this.gridWidth = this.container.clientWidth;
@@ -195,7 +220,7 @@
   function Tiles() {
     this.tiles = [];
     this.tileQueue = [];
-    for (var i = 0, len = 40; i < len; i++) {
+    for (let i = 0, len = 40; i < len; i++) {
       this.tiles.push({
         id: i,
         title: 'title',
@@ -205,12 +230,11 @@
   }
 
   /*
-  * showTile
+  * Show tile
   */
   Tiles.prototype.showTile = function() {
-    console.log('Tiles: Show Tile');
     this.tileQueue.forEach((item, index) => {
-      var node = document.createElement("DIV");
+      let node = document.createElement("DIV");
       node.style.cssText = `top: ${item.y}%; left: ${item.x}%; width: ${item.width}%; height: ${item.height}%`;
       node.className = 'tile';
       this.container.appendChild(node);
@@ -218,79 +242,94 @@
   };
 
   /*
-  * foundTileSize
+  * Get next tile size
+  * This will get the next tile size to use.
+  * @param {string} tileIndex
   */
-  Tiles.prototype.foundTileSize = function(tileCount) {
-    var size = 'small';
-    if(tileCount < constants.TILE_SIZE.big.maxAmount) {
-      size = 'big';
-    }else if(tileCount < constants.TILE_SIZE.big.maxAmount + constants.TILE_SIZE.medium.maxAmount) {
-      size = 'medium';
+  Tiles.prototype.getNextTileSize = function(tileIndex) {
+    var currentTileCount = 0;
+    var tileSize = null;
+    for(let size in constants.TILE_SIZE){
+      currentTileCount = currentTileCount + constants.TILE_SIZE[size].maxAmount;
+      if(tileIndex < currentTileCount){
+        return size;
+      }
     }
-    return size;
-  };
-
-
-  /*
-  * reduceTileSize
-  */
-  Tiles.prototype.reduceTileSize = function(currentSize) {
-    switch(currentSize) {
-      case 'big':
-        return 'medium';
-      case 'medium':
-        return 'small';
-    }
+    return tileSize;
   };
 
   /*
-  * getMaxTileCount
+  * Reduce tile size
+  * This is checking all the tile size and look for the next area smaller then the current one.
+  * To find the area we just ened to multiply the col and row (constants.TILE_SIZE[size].col * constants.TILE_SIZE[size].row)
+  * @param {string} currentTileSize - big, medium, small, ect.
+  */
+  Tiles.prototype.reduceTileSize = function(currentTileSize) {
+    var currentTile = constants.TILE_SIZE[currentTileSize];
+    var currentTileArea = currentTile.col * currentTile.row;
+    var nextSize = null; // This will return null if no smaller tile are found.
+    for (let size in constants.TILE_SIZE) {
+      let nextTileArea = constants.TILE_SIZE[size].col * constants.TILE_SIZE[size].row;
+      if (nextTileArea < currentTileArea) {
+        return size;
+      }
+    }
+    return nextSize;
+  };
+
+  /*
+  * Get max tile count
   */
   Tiles.prototype.getMaxTileCount = function() {
     var maxTileCount = 0;
-    for(var size in constants.TILE_SIZE){
+    for (let size in constants.TILE_SIZE) {
       maxTileCount = maxTileCount + constants.TILE_SIZE[size].maxAmount;
     }
     return maxTileCount;
   };
 
-
   /*
-  * buildTiles
+  * Build tiles
   */
   Tiles.prototype.buildTiles = function() {
-    console.log('Tiles: Build Tiles');
     var size = null;
     var tileCount = 0;
     var maxTile = this.getMaxTileCount();
 
     this.tiles.forEach((tile, index) => {
       if(this.coords.free.length > 0 && tileCount < maxTile) {
-        tile.size = this.foundTileSize(tileCount);
-
-        // Check if we found a place for the tile
-        var availableSpaceCoords = this.checkPlacabilityOfTile(constants.TILE_SIZE[tile.size].col, constants.TILE_SIZE[tile.size].row);
+        tile.size = this.getNextTileSize(tileCount);
+        var availableAreaCoords = null;
 
         // If no space were found that mean the tile is to big.
         // Need to size it down a bit
-        // todo: need recursion because we only downgrading the size one time. What if the second size is still to big. It will crash.
-        if(!availableSpaceCoords){
+        var findNextAvailableAreaCoords = function() {
           tile.size = this.reduceTileSize(tile.size);
-          availableSpaceCoords = this.checkPlacabilityOfTile(constants.TILE_SIZE[tile.size].col, constants.TILE_SIZE[tile.size].row);
-        }
+          if(!tile.size) {
+            return undefined;
+          }
+          var availableAreaCoords = this.getNewTileArea(tile.size);
+          if(!availableAreaCoords){
+            return findNextAvailableAreaCoords();
+          }
+          return availableAreaCoords;
+        }.bind(this);
+
+        // Check if we found a place for the tile
+        availableAreaCoords = findNextAvailableAreaCoords();
 
         // Just making sure we have space for this tile.
         // We wont need this condition after I make a recursion for the downsizing tile function
-        if(availableSpaceCoords){
+        if(availableAreaCoords){
           tileCount++;
           tile.key = index;
-          tile.target = availableSpaceCoords[0]; //Take the first one in the array. They are already shoveled
+          tile.target = availableAreaCoords[0]; //Take the first one in the array. They are already shoveled
           tile.col = constants.TILE_SIZE[tile.size].col;
           tile.row = constants.TILE_SIZE[tile.size].row;
-          var myTile = new Tile(this, tile);
+          let myTile = new Tile(this, tile);
 
           // Update free & taken coords
-          var tileOccupationCoords = this.getOccupationFromCoord(tile.col, tile.row, tile.target);
+          let tileOccupationCoords = this.getOccupationFromCoord(tile.col, tile.row, tile.target);
           tileOccupationCoords.forEach(coords => {
             this.putFreeCoorToTakenCoor(coords);
           });
@@ -313,7 +352,7 @@
   }
 
   /*
-  * getTileInfos
+  * Get tile infos
   */
   Tile.prototype.getTileInfos = function() {
     return {
@@ -324,32 +363,6 @@
       height: (this.params.row * 100 / this.grid.row) - this.grid.gridHeightSpacer,
       id: this.params.key
     };
-  };
-
-  /*
-  * resizeTileIfDosentFit
-  */
-  // todo: use it. its currently not used at all...
-  Tile.prototype.resizeTileIfDosentFit = function() {
-    console.log('Tile: Set Target');
-    if (!this.targets || this.targets.length === 0) {
-      for(var size of constants.TILE_SIZE){
-        if (constants.TILE_SIZE[size].col < this.col) {
-          this.col = constants.TILE_SIZE[size].col;
-          this.row = constants.TILE_SIZE[size].row;
-          this.size = size;
-          this.targets = this.grid.checkPlacabilityOfTile(this.col, this.row, this.callNumber);
-        }
-      }
-    }
-  };
-
-  /*
-  * Build
-  */
-  Tile.prototype.build = function() {
-    console.log('Tile: Build');
-    this.resizeTileIfDosentFit();
   };
 
   /**

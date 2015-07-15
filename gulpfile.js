@@ -35,8 +35,9 @@ gulp.task('sass', function () {
 });
 
 gulp.task("babel", function () {
-  return gulp.src("./js/*.js")
+  return gulp.src(src + '/js/*.js')
     .pipe(babel())
+    .pipe(gulp.dest(dist + '/js'));
 });
 
 gulp.task('watch', function () {
