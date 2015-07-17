@@ -1,12 +1,12 @@
 var gulp = require('gulp'),
-  connect = require('gulp-connect'),
-  open = require('gulp-open'),
-  watch = require('gulp-watch'),
-  sass = require('gulp-sass'),
-  babel = require("gulp-babel");
-var port = 8081;
-var src = './src';
-var dist = './dist';
+    connect = require('gulp-connect'),
+    open = require('gulp-open'),
+    watch = require('gulp-watch'),
+    sass = require('gulp-sass'),
+    babel = require("gulp-babel"),
+    port = 8081,
+    src = './src',
+    dist = './dist';
 
 gulp.task('connect', function () {
   connect.server({
