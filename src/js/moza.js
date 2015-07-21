@@ -1,7 +1,7 @@
 // We'll wrap all our code in a self executing function and then make it available in the global namespace. We'll start off like this:
 ;(function( window ) {
 
-  var constants = {
+  let constants = {
     // The first tile size have the priority.
     // That mean will parse the tile size from top to bottom.
     // Its better to add the biggest tile at the top.
@@ -65,7 +65,7 @@
   * @param {object} coords
   */
   Grid.prototype.checkAvailabilityOfCoordsFromCoord = function(coords) {
-    var y = 0;
+    let y = 0;
     coords.forEach(coord => {
       let i = this.coords.free.length;
       while (i--) {
@@ -86,7 +86,7 @@
   */
   Grid.prototype.getOccupationFromCoord = function(totalCol, totalRow, coord) {
     //this.coords.free
-    var coords = [];
+    let coords = [];
     if (coord) {
       for (let i = 0; i < totalCol; i++) {
         for (let j = 0; j < totalRow; j++) {
@@ -105,7 +105,7 @@
   * @returns {array|undefined}
   */
   Grid.prototype.getNewTileArea = function(tileSize) {
-    var targets = [],
+    let targets = [],
        totalCol = constants.TILE_SIZE[tileSize].col,
        totalRow = constants.TILE_SIZE[tileSize].row;
     this.coords.free.forEach(freeCoord => {
@@ -247,8 +247,8 @@
   * @param {string} tileIndex
   */
   Tiles.prototype.getNextTileSize = function(tileIndex) {
-    var currentTileCount = 0;
-    var tileSize = null;
+    let currentTileCount = 0;
+    let tileSize = null;
     for(let size in constants.TILE_SIZE){
       currentTileCount = currentTileCount + constants.TILE_SIZE[size].maxAmount;
       if(tileIndex < currentTileCount){
@@ -265,9 +265,9 @@
   * @param {string} currentTileSize - big, medium, small, ect.
   */
   Tiles.prototype.reduceTileSize = function(currentTileSize) {
-    var currentTile = constants.TILE_SIZE[currentTileSize];
-    var currentTileArea = currentTile.col * currentTile.row;
-    var nextSize = null; // This will return null if no smaller tile are found.
+    let currentTile = constants.TILE_SIZE[currentTileSize];
+    let currentTileArea = currentTile.col * currentTile.row;
+    let nextSize = null; // This will return null if no smaller tile are found.
     for (let size in constants.TILE_SIZE) {
       let nextTileArea = constants.TILE_SIZE[size].col * constants.TILE_SIZE[size].row;
       if (nextTileArea < currentTileArea) {
@@ -281,7 +281,7 @@
   * Get max tile count
   */
   Tiles.prototype.getMaxTileCount = function() {
-    var maxTileCount = 0;
+    let maxTileCount = 0;
     for (let size in constants.TILE_SIZE) {
       maxTileCount = maxTileCount + constants.TILE_SIZE[size].maxAmount;
     }
@@ -292,23 +292,23 @@
   * Build tiles
   */
   Tiles.prototype.buildTiles = function() {
-    var size = null;
-    var tileCount = 0;
-    var maxTile = this.getMaxTileCount();
+    let size = null;
+    let tileCount = 0;
+    let maxTile = this.getMaxTileCount();
 
     this.tiles.forEach((tile, index) => {
       if(this.coords.free.length > 0 && tileCount < maxTile) {
         tile.size = this.getNextTileSize(tileCount);
-        var availableAreaCoords = null;
+        let availableAreaCoords = null;
 
         // If no space were found that mean the tile is to big.
         // Need to size it down a bit
-        var findNextAvailableAreaCoords = function() {
+        let findNextAvailableAreaCoords = function() {
           tile.size = this.reduceTileSize(tile.size);
           if(!tile.size) {
             return undefined;
           }
-          var availableAreaCoords = this.getNewTileArea(tile.size);
+          let availableAreaCoords = this.getNewTileArea(tile.size);
           if(!availableAreaCoords){
             return findNextAvailableAreaCoords();
           }
