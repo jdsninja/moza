@@ -1,7 +1,7 @@
 // We'll wrap all our code in a self executing function and then make it available in the global namespace. We'll start off like this:
 ;(function( window ) {
 
-  var constants = {
+  let constants = {
     // The first tile size have the priority.
     // That mean will parse the tile size from top to bottom.
     // Its better to add the biggest tile at the top.
@@ -65,7 +65,7 @@
   * @param {object} coords
   */
   Grid.prototype.checkAvailabilityOfCoordsFromCoord = function(coords) {
-    var y = 0;
+    let y = 0;
     coords.forEach(coord => {
       let i = this.coords.free.length;
       while (i--) {
@@ -84,9 +84,9 @@
   * @param {number} totalRow
   * @param {object} coord
   */
-  Grid.prototype.getOccupationFromCoord = function(totalCol, totalRow, coord) {
-    //this.coords.free
-    var coords = [];
+  Grid.prototype.getOccupationFromCoord = function(params) {
+    var {totalCol, totalRow, coord} = params;
+    let coords = [];
     if (coord) {
       for (let i = 0; i < totalCol; i++) {
         for (let j = 0; j < totalRow; j++) {
@@ -105,7 +105,7 @@
   * @returns {array|undefined}
   */
   Grid.prototype.getNewTileArea = function(tileSize) {
-    var targets = [],
+    let targets = [],
        totalCol = constants.TILE_SIZE[tileSize].col,
        totalRow = constants.TILE_SIZE[tileSize].row;
     this.coords.free.forEach(freeCoord => {
@@ -115,7 +115,7 @@
       if (tileRightEdge <= this.gridWidth && tileBottomEdge <= this.gridHeight) {
         // We jsut fond a good spot for this tile.
         // It's time to check if the area is clear.
-        let coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
+        let coords = this.getOccupationFromCoord({totalCol, totalRow, coord: freeCoord});
         if (this.checkAvailabilityOfCoordsFromCoord(coords)) {
           targets.push(freeCoord);
         }
@@ -195,17 +195,18 @@
   * @param {number} gCol
   * @param {number} gRow
   */
-  Grid.prototype.buildGrid = function(containerId, gCol, gRow) {
+  Grid.prototype.buildGrid = function(params) {
+    var {containerId, col, row} = params;
     this.containerId = containerId;
     this.container = document.getElementById(containerId);
     this.gridWidth = this.container.clientWidth;
     this.gridHeight = this.container.clientHeight;
-    this.col = gCol;//todo: this should be more specific. it will help understand the code when we call this from a sub function.
-    this.row = gRow;
+    this.col = col;//todo: this should be more specific. it will help understand the code when we call this from a sub function.
+    this.row = row;
     this.gridWidthSpacer = 2 * 100 / this.gridWidth;
     this.gridHeightSpacer = 2 * 100 / this.gridHeight;
-    this.tileWidth = this.gridWidth / gCol; //todo: find a more specific name for this. its more a zone or area then tile
-    this.tileHeight = this.gridHeight / gRow;
+    this.tileWidth = this.gridWidth / col; //todo: find a more specific name for this. its more a zone or area then tile
+    this.tileHeight = this.gridHeight / row;
 
     // Set coordonate
     this.setCoords();
@@ -247,8 +248,8 @@
   * @param {string} tileIndex
   */
   Tiles.prototype.getNextTileSize = function(tileIndex) {
-    var currentTileCount = 0;
-    var tileSize = null;
+    let currentTileCount = 0;
+    let tileSize = null;
     for(let size in constants.TILE_SIZE){
       currentTileCount = currentTileCount + constants.TILE_SIZE[size].maxAmount;
       if(tileIndex < currentTileCount){
@@ -265,9 +266,9 @@
   * @param {string} currentTileSize - big, medium, small, ect.
   */
   Tiles.prototype.reduceTileSize = function(currentTileSize) {
-    var currentTile = constants.TILE_SIZE[currentTileSize];
-    var currentTileArea = currentTile.col * currentTile.row;
-    var nextSize = null; // This will return null if no smaller tile are found.
+    let currentTile = constants.TILE_SIZE[currentTileSize];
+    let currentTileArea = currentTile.col * currentTile.row;
+    let nextSize = null; // This will return null if no smaller tile are found.
     for (let size in constants.TILE_SIZE) {
       let nextTileArea = constants.TILE_SIZE[size].col * constants.TILE_SIZE[size].row;
       if (nextTileArea < currentTileArea) {
@@ -281,7 +282,7 @@
   * Get max tile count
   */
   Tiles.prototype.getMaxTileCount = function() {
-    var maxTileCount = 0;
+    let maxTileCount = 0;
     for (let size in constants.TILE_SIZE) {
       maxTileCount = maxTileCount + constants.TILE_SIZE[size].maxAmount;
     }
@@ -292,23 +293,23 @@
   * Build tiles
   */
   Tiles.prototype.buildTiles = function() {
-    var size = null;
-    var tileCount = 0;
-    var maxTile = this.getMaxTileCount();
+    let size = null;
+    let tileCount = 0;
+    let maxTile = this.getMaxTileCount();
 
     this.tiles.forEach((tile, index) => {
       if(this.coords.free.length > 0 && tileCount < maxTile) {
         tile.size = this.getNextTileSize(tileCount);
-        var availableAreaCoords = null;
+        let availableAreaCoords = null;
 
         // If no space were found that mean the tile is to big.
         // Need to size it down a bit
-        var findNextAvailableAreaCoords = function() {
+        let findNextAvailableAreaCoords = function() {
           tile.size = this.reduceTileSize(tile.size);
           if(!tile.size) {
             return undefined;
           }
-          var availableAreaCoords = this.getNewTileArea(tile.size);
+          let availableAreaCoords = this.getNewTileArea(tile.size);
           if(!availableAreaCoords){
             return findNextAvailableAreaCoords();
           }
@@ -329,7 +330,7 @@
           let myTile = new Tile(this, tile);
 
           // Update free & taken coords
-          let tileOccupationCoords = this.getOccupationFromCoord(tile.col, tile.row, tile.target);
+          let tileOccupationCoords = this.getOccupationFromCoord({totalCol: tile.col, totalRow: tile.row, coord: tile.target});
           tileOccupationCoords.forEach(coords => {
             this.putFreeCoorToTakenCoor(coords);
           });
@@ -380,9 +381,10 @@
   * @param {number} col
   * @param {number} row
   */
-  Moza.prototype.build = function(containerId, col, row) {
+  Moza.prototype.build = function(params) {
+    console.log(params);
     // Setup the grid
-    this.buildGrid(containerId, col, row);
+    this.buildGrid(params);
     // Build the tiles. At this point we will have the size and position of all the tiles.
     this.buildTiles();
     // This will parse the
