@@ -84,8 +84,8 @@
   * @param {number} totalRow
   * @param {object} coord
   */
-  Grid.prototype.getOccupationFromCoord = function(totalCol, totalRow, coord) {
-    //this.coords.free
+  Grid.prototype.getOccupationFromCoord = function(params) {
+    var {totalCol, totalRow, coord} = params;
     let coords = [];
     if (coord) {
       for (let i = 0; i < totalCol; i++) {
@@ -115,7 +115,7 @@
       if (tileRightEdge <= this.gridWidth && tileBottomEdge <= this.gridHeight) {
         // We jsut fond a good spot for this tile.
         // It's time to check if the area is clear.
-        let coords = this.getOccupationFromCoord(totalCol, totalRow, freeCoord);
+        let coords = this.getOccupationFromCoord({totalCol, totalRow, coord: freeCoord});
         if (this.checkAvailabilityOfCoordsFromCoord(coords)) {
           targets.push(freeCoord);
         }
@@ -195,17 +195,18 @@
   * @param {number} gCol
   * @param {number} gRow
   */
-  Grid.prototype.buildGrid = function(containerId, gCol, gRow) {
+  Grid.prototype.buildGrid = function(params) {
+    var {containerId, col, row} = params;
     this.containerId = containerId;
     this.container = document.getElementById(containerId);
     this.gridWidth = this.container.clientWidth;
     this.gridHeight = this.container.clientHeight;
-    this.col = gCol;//todo: this should be more specific. it will help understand the code when we call this from a sub function.
-    this.row = gRow;
+    this.col = col;//todo: this should be more specific. it will help understand the code when we call this from a sub function.
+    this.row = row;
     this.gridWidthSpacer = 2 * 100 / this.gridWidth;
     this.gridHeightSpacer = 2 * 100 / this.gridHeight;
-    this.tileWidth = this.gridWidth / gCol; //todo: find a more specific name for this. its more a zone or area then tile
-    this.tileHeight = this.gridHeight / gRow;
+    this.tileWidth = this.gridWidth / col; //todo: find a more specific name for this. its more a zone or area then tile
+    this.tileHeight = this.gridHeight / row;
 
     // Set coordonate
     this.setCoords();
@@ -329,7 +330,7 @@
           let myTile = new Tile(this, tile);
 
           // Update free & taken coords
-          let tileOccupationCoords = this.getOccupationFromCoord(tile.col, tile.row, tile.target);
+          let tileOccupationCoords = this.getOccupationFromCoord({totalCol: tile.col, totalRow: tile.row, coord: tile.target});
           tileOccupationCoords.forEach(coords => {
             this.putFreeCoorToTakenCoor(coords);
           });
@@ -380,9 +381,10 @@
   * @param {number} col
   * @param {number} row
   */
-  Moza.prototype.build = function(containerId, col, row) {
+  Moza.prototype.build = function(params) {
+    console.log(params);
     // Setup the grid
-    this.buildGrid(containerId, col, row);
+    this.buildGrid(params);
     // Build the tiles. At this point we will have the size and position of all the tiles.
     this.buildTiles();
     // This will parse the
