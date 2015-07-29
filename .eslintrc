@@ -1,0 +1,17 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+    "__DEV__": true,
+    "__SERVER__": true
+  },
+  "rules": {
+    "strict": [2, "never"],
+    "indent": [2, 2],
+    "quotes": [2, "single"]
+  }
+}
