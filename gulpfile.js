@@ -121,4 +121,4 @@ gulp.task('serve', function () {
 });
 
 // WEB SERVER
-gulp.task('default', ['build-persistent', 'serve', 'watch']);
+gulp.task('default', ['build-persistent', 'watch']);
