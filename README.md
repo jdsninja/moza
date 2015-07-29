@@ -10,7 +10,7 @@ Moza is, first of all, generating a grid. And then, it will fill this grid with 
 ```
 let Moza = require('moza');
 Moza.build({
-  containerId: "moza",
+  el: "moza",
   col: 7,
   row: 8
 });
@@ -18,17 +18,7 @@ Moza.build({
 
  ## options
 | Name | Description |
-|---|---|
-| containerId | |
-| col | |
-| row | |
-
-
-
-
-should have
-index.js
-LICENSE.txt
-package.json
-README.md
-examples - >sould be on a seperate repo
+|-----------|--------|
+| el        |        |
+| col       |        |
+| row       |        |
