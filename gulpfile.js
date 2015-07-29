@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
     fs = require('fs'),
+    del = require('del');
     browserify = require('browserify'),
     watchify = require('watchify'),
     babelify = require('babelify'),
@@ -14,19 +15,25 @@ var gulp = require('gulp'),
     flatten = require('gulp-flatten'),
     sass = require('gulp-sass'),
     prefix = require('gulp-autoprefixer'),
-    minify = require('gulp-minify-css');
+    minify = require('gulp-minify-css'),
+    exit = require('gulp-exit'),
+    livereload = require('gulp-livereload');
+var package = require('./package.json');
 
 var paths = {
-  entryFile: './src/js/moza.js',
-  outputDir: './dist/js/',
-  outputFile: 'moza.js',
+  input: 'src/**/*',
+  output: 'dist/',
+  scripts: {
+    entryFile: 'src/js/moza.js',
+    outputName: 'moza.js',
+		input: 'src/js/*',
+		output: 'dist/js/'
+	},
 	styles: {
 		input: 'src/sass/**/*.{scss,sass}',
 		output: 'dist/css/'
 	}
 }
-
-var package = require('./package.json');
 
 var banner = {
 	full :
@@ -36,46 +43,35 @@ var banner = {
 		' * <%= package.repository.url %>\n' +
 		' * \n' +
 		' * Free to use under the MIT License.\n' +
-		' * http://gomakethings.com/mit/\n' +
 		' */\n\n',
 	min :
 		'/**' +
-		' <%= package.name %> v<%= package.version %>, by Chris Ferdinandi' +
+		' <%= package.name %> v<%= package.version %>, by <%= package.author.name %>.\n' +
 		' | <%= package.repository.url %>' +
-		' | Licensed under MIT: http://gomakethings.com/mit/' +
+		' | Licensed under MIT' +
 		' */\n'
 };
-
-
-// clean the output directory
-gulp.task('clean', function(cb){
-    rimraf(paths.outputDir, cb);
-});
 
 var bundler;
 function getBundler() {
   if (!bundler) {
-    bundler = watchify(browserify(paths.entryFile, _.extend({ debug: true }, watchify.args)));
+    bundler = watchify(browserify(paths.scripts.entryFile, _.extend({ debug: true }, watchify.args)));
   }
   return bundler;
 };
 
-function bundle() {
+gulp.task('build:scripts', function() {
   return getBundler()
     .transform(babelify)
     .bundle()
     .on('error', function(err) { console.log('Error: ' + err.message); })
-    .pipe(source(paths.outputFile))
-    .pipe(gulp.dest(paths.outputDir))
-    .pipe(reload({ stream: true }));
-}
-
-gulp.task('build-persistent', ['clean'], function() {
-  return bundle();
-});
-
-gulp.task('build', ['build-persistent'], function() {
-  process.exit(0);
+    .pipe(source(paths.scripts.outputName))
+    .pipe(gulp.dest(paths.scripts.output))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(minify())
+    .pipe(header(banner.min, { package : package }))
+    .pipe(gulp.dest(paths.scripts.output))
+    .pipe(exit());
 });
 
 // Process, lint, and minify Sass files
@@ -100,17 +96,6 @@ gulp.task('build:styles', function() {
 		.pipe(gulp.dest(paths.styles.output));
 });
 
-gulp.task('watch', ['build-persistent'], function() {
-  browserSync({
-    server: {
-      baseDir: './'
-    }
-  });
-  getBundler().on('update', function() {
-    gulp.start('build-persistent')
-  });
-});
-
 // WEB SERVER
 gulp.task('serve', function () {
   browserSync({
@@ -120,5 +105,52 @@ gulp.task('serve', function () {
   });
 });
 
+// Remove prexisting content from output and test folders
+gulp.task('clean:dist', function () {
+	del.sync([
+		paths.output
+	]);
+});
+
+// Spin up livereload server and listen for file changes
+gulp.task('listen', function () {
+	livereload.listen();
+	gulp.watch(paths.input).on('change', function(file) {
+		gulp.start('default');
+		gulp.start('refresh');
+	});
+});
+
+// Run livereload after file change
+gulp.task('refresh', ['build'], function () {
+	livereload.changed();
+});
+
+// Make sure we exit the process
+gulp.task('exit', function () {
+	  process.exit(0);
+});
+
+/**
+ * Task Runners
+ */
+// Compile files
+gulp.task('build', [
+	'clean:dist',
+	'build:styles',
+	'build:scripts'
+]);
+
+// Compile files when something changes
+gulp.task('watch', [
+	'listen',
+	'default'
+]);
+
+// Start the dev server and watch files for changes
+gulp.task('dev', [
+	'serve'
+]);
+
 // WEB SERVER
-gulp.task('default', ['build-persistent', 'watch']);
+gulp.task('default', ['build']);

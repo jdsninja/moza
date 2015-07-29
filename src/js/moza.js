@@ -381,7 +381,6 @@ Tile.prototype.getTileInfos = function() {
   };
 };
 
-
 /**
 * Moza
 */
