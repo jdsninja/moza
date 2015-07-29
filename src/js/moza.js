@@ -41,10 +41,6 @@ let constants = {
   }
 };
 
-
-
-
-
 /**
 * Grid
 */
@@ -64,8 +60,6 @@ function Grid() {
     taken: []
   };
 }
-
-
 
 /**
 * Check availability of coords from coord
