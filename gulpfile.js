@@ -1,48 +1,129 @@
-var gulp = require('gulp'),
-    connect = require('gulp-connect'),
-    open = require('gulp-open'),
-    watch = require('gulp-watch'),
-    sass = require('gulp-sass'),
-    babel = require("gulp-babel"),
-    port = 8081,
-    src = './src',
-    dist = './dist';
+var gulp = require('gulp');
+var fs = require('fs');
+var browserify = require('browserify');
+var watchify = require('watchify');
+var babelify = require('babelify');
+var rimraf = require('rimraf');
+var source = require('vinyl-source-stream');
+var _ = require('lodash');
+var browserSync = require('browser-sync');
+var reload = browserSync.reload;
+var plumber = require('gulp-plumber');
+var header = require('gulp-header');
+var rename = require('gulp-rename');
+var flatten = require('gulp-flatten'); 
+var sass = require('gulp-sass');
+var prefix = require('gulp-autoprefixer');
+var minify = require('gulp-minify-css');
 
-gulp.task('connect', function () {
-  connect.server({
-    port: port,
-    livereload: true
+var config = {
+  entryFile: './src/js/moza.js',
+  outputDir: './dist/js/',
+  outputFile: 'moza.js'
+};
+
+var paths = {
+	styles: {
+		input: 'src/sass/**/*.{scss,sass}',
+		output: 'dist/css/'
+	}
+}
+var package = require('./package.json');
+
+var banner = {
+	full :
+		'/**\n' +
+		' * <%= package.name %> v<%= package.version %>\n' +
+		' * <%= package.description %>, by <%= package.author.name %>.\n' +
+		' * <%= package.repository.url %>\n' +
+		' * \n' +
+		' * Free to use under the MIT License.\n' +
+		' * http://gomakethings.com/mit/\n' +
+		' */\n\n',
+	min :
+		'/**' +
+		' <%= package.name %> v<%= package.version %>, by Chris Ferdinandi' +
+		' | <%= package.repository.url %>' +
+		' | Licensed under MIT: http://gomakethings.com/mit/' +
+		' */\n'
+};
+
+
+// clean the output directory
+gulp.task('clean', function(cb){
+    rimraf(config.outputDir, cb);
+});
+
+var bundler;
+function getBundler() {
+  if (!bundler) {
+    bundler = watchify(browserify(config.entryFile, _.extend({ debug: true }, watchify.args)));
+  }
+  return bundler;
+};
+
+function bundle() {
+  return getBundler()
+    .transform(babelify)
+    .bundle()
+    .on('error', function(err) { console.log('Error: ' + err.message); })
+    .pipe(source(config.outputFile))
+    .pipe(gulp.dest(config.outputDir))
+    .pipe(reload({ stream: true }));
+}
+
+gulp.task('build-persistent', ['clean'], function() {
+  return bundle();
+});
+
+gulp.task('build', ['build-persistent'], function() {
+  process.exit(0);
+});
+
+gulp.task('watch', ['build-persistent'], function() {
+
+  browserSync({
+    server: {
+      baseDir: './'
+    }
+  });
+
+  getBundler().on('update', function() {
+    gulp.start('build-persistent')
   });
 });
 
-gulp.task('open', function(){
-  var options = {
-    url: 'http://localhost:' + port
-  };
-  gulp.src('./index.html')
-  .pipe(open('', options));
+
+
+// Process, lint, and minify Sass files
+gulp.task('build:styles', function() {
+	return gulp.src(paths.styles.input)
+		.pipe(plumber())
+		.pipe(sass({
+			outputStyle: 'expanded',
+			sourceComments: true
+		}))
+		.pipe(flatten())
+		.pipe(prefix({
+			browsers: ['last 2 version', '> 1%'],
+			cascade: true,
+			remove: true
+		}))
+		.pipe(header(banner.full, { package : package }))
+		.pipe(gulp.dest(paths.styles.output))
+		.pipe(rename({ suffix: '.min' }))
+		.pipe(minify())
+		.pipe(header(banner.min, { package : package }))
+		.pipe(gulp.dest(paths.styles.output));
 });
 
-gulp.task('js', function () {
-  gulp.src(src + '/js/*.js')
-    .pipe(connect.reload());
-});
 
-gulp.task('sass', function () {
-  gulp.src(src + '/sass/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest(dist + '/css'));
-});
 
-gulp.task("babel", function () {
-  return gulp.src(src + '/js/*.js')
-    .pipe(babel())
-    .pipe(gulp.dest(dist + '/js'));
+// WEB SERVER
+gulp.task('serve', function () {
+  browserSync({
+    server: {
+      baseDir: './'
+    }
+  });
 });
-
-gulp.task('watch', function () {
-  gulp.watch([src + '/js/*.js'], ['js', 'babel']);
-  gulp.watch(src + '/sass/*.scss', ['sass']);
-});
-
-gulp.task('default', ['sass', 'babel', 'connect', 'open', 'watch']);

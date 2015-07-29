@@ -1,8 +1,12 @@
 {
-  "author": "Jerome D.Soucy <hello@jeromeds.ocm> (http://jeromeds.com)",
-  "name": "moza",
-  "description": "Generate random mosaic",
+  "name": "Moza",
   "version": "1.0.0",
+  "description": "Generate random mosaic",
+  "author": {
+    "name": "Jerome D.Soucy",
+    "email": "hello@jeromeds.com",
+    "url": "http://jeromeds.com"
+  },
   "license": "MIT",
   "homepage": "https://github.com/jeromeds/Moza",
   "repository": {
@@ -12,24 +16,25 @@
   "bugs": {
     "url": "https://github.com/jeromeds/Moza/issues"
   },
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
-  "dependencies": {
-    "gulp-babel": "~5.1.0",
-    "gulp-jasmine": "~2.0.1",
-    "gulp-sass": "~2.0.3",
-    "gulp-open": "~0.3.2",
-    "gulp-connect": "~2.2.0",
-    "gulp": "~3.9.0",
-    "gulp-less": "~3.0.3",
-    "gulp-watch": "~4.2.4"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "./dist",
   "keywords": [
     "mosaic"
-  ]
+  ],
+  "devDependencies": {
+    "babelify": "^6.1.3",
+    "browser-sync": "^2.8.0",
+    "browserify": "^11.0.0",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^2.3.1",
+    "gulp-flatten": "^0.1.1",
+    "gulp-header": "^1.2.2",
+    "gulp-minify-css": "^1.2.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.0.4",
+    "lodash": "^3.10.0",
+    "rimraf": "^2.4.2",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.3.0"
+  }
 }

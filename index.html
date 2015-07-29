@@ -3,16 +3,16 @@
 <head>
   <title>Moza</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="dist/css/master.css">
+  <link rel="stylesheet" href="./dist/css/master.css">
 </head>
 <body>
-  <div id="moza" class="moza"></div>
-  <script src="dist/js/moza.js"></script>
-  <script type="text/javascript">
-    (function() {
-      var moza = new Moza();
-      moza.build({containerId: "moza", col: 7, row: 8});
-    })();
+  <div id="myStage" class="moza"></div>
+  <script src="./dist/js/moza.js"></script>
+  <script>
+    console.log(this);
+    var moza = new Moza();
+    console.log(moza);
+    moza.build({el: 'myStage', col:7, row:7});
   </script>
 </body>
 </html>
