@@ -1,24 +1,31 @@
-# Moza
-
- <a href="https://travis-ci.org/jeromeds/Moza"><img alt="Build Status" src="https://api.travis-ci.org/jeromeds/Moza.svg"></a>
+# Moza [![Build Status](https://api.travis-ci.org/jeromeds/Moza.svg)](https://travis-ci.org/jeromeds/Moza)
 
 Moza is, first of all, generating a grid. And then, it will fill this grid with tiles of different size.
 
-## Use
-`npm install moza --save`
 
+## Getting Started
+Compiled and production-ready code can be found in the `dist` directory. The `src` directory contains development code.
+
+1. Include Moza on your site.
 ```
-let Moza = require('moza');
-Moza.build({
-  el: "moza",
-  col: 7,
-  row: 8
-});
- ````
+<link rel="stylesheet" href="./dist/css/master.css">
+<script src="dist/js/moza.js"></script>
+```
 
- ## options
-| Name | Description |
-|-----------|--------|
-| el        |        |
-| col       |        |
-| row       |        |
+2. Add the markup to your HTML.
+```
+<div id="myStage" class="moza"></div>
+```
+
+3. Initialize Moza.
+```
+<script>
+  var moza = new Moza();
+  moza.build({el: 'myStage', col:7, row:7});
+</script>
+```
+
+
+> They don't know it yet but special thanks to: [@masyl](https://github.com/masyl),
+[@thoughtram](https://github.com/thoughtram/es6-browserify-boilerplate) &
+[@cferdinandi](https://github.com/cferdinandi)
