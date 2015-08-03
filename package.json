@@ -37,6 +37,7 @@
     "gulp-sass": "^2.0.4",
     "lodash": "^3.10.0",
     "rimraf": "^2.4.2",
+    "superagent": "^1.2.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.3.0"
   }

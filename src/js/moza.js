@@ -1,45 +1,7 @@
 'use strict';
 
-let constants = {
-  data: {
-    url: '../data/data.json'
-  },
-  // The first tile size have the priority.
-  // That mean will parse the tile size from top to bottom.
-  // Its better to add the biggest tile at the top.
-  'TILE_SIZE': {
-    XXL: {
-      maxAmount: 1,
-      col: 5,
-      row: 5
-    },
-    XL: {
-      maxAmount: 2,
-      col: 4,
-      row: 4
-    },
-    L: {
-      maxAmount: 10,
-      col: 3,
-      row: 2
-    },
-    M: {
-      maxAmount: 10,
-      col: 2,
-      row: 2
-    },
-    S: {
-      maxAmount: 10,
-      col: 2,
-      row: 1
-    },
-    XS: {
-      maxAmount: 50,
-      col: 1,
-      row: 1
-    }
-  }
-};
+import Utils from './utils';
+import Constants from './constants';
 
 /**
 * Grid
@@ -107,8 +69,8 @@ Grid.prototype.getOccupationFromCoord = function(params) {
 */
 Grid.prototype.getNewTileArea = function(tileSize) {
   let targets = [],
-     totalCol = constants.TILE_SIZE[tileSize].col,
-     totalRow = constants.TILE_SIZE[tileSize].row;
+     totalCol = Constants.TILE_SIZE[tileSize].col,
+     totalRow = Constants.TILE_SIZE[tileSize].row;
   this.coords.free.forEach(freeCoord => {
     // make sure the tile ending end don't go futher then the grid edge
     let tileRightEdge = (freeCoord.x + totalCol) * this.tileWidth,
@@ -234,11 +196,28 @@ function Tiles() {
 /*
 * Show tile
 */
-Tiles.prototype.showTile = function() {
+Tiles.prototype.showTile = function(params) {
+  var that = this;
+  if(params.url){
+    Utils.getJSON(params.url).then(function(response) {
+      return JSON.parse(response);
+    }).then(function(response) {
+      that.buildTileElm(response);
+    });
+  }else{
+    this.buildTileElm();
+  }
+};
+
+/*
+* Show tile
+*/
+Tiles.prototype.buildTileElm = function(response){
   this.tileQueue.forEach((item, index) => {
-    let node = document.createElement("DIV");
-    node.style.cssText = `top: ${item.y}%; left: ${item.x}%; width: ${item.width}%; height: ${item.height}%`;
+    let imgUrl = response ? response[index].img : '';
+    let node = document.createElement("div");
     node.className = 'tile';
+    node.style.cssText = `top: ${item.y}%; left: ${item.x}%; width: ${item.width}%; height: ${item.height}%; background-image: url(${imgUrl}); background-size: 100% 100%`;
     this.container.appendChild(node);
   });
 };
@@ -251,8 +230,8 @@ Tiles.prototype.showTile = function() {
 Tiles.prototype.getNextTileSize = function(tileIndex) {
   let currentTileCount = 0;
   let tileSize = null;
-  for(let size in constants.TILE_SIZE){
-    currentTileCount = currentTileCount + constants.TILE_SIZE[size].maxAmount;
+  for(let size in Constants.TILE_SIZE){
+    currentTileCount = currentTileCount + Constants.TILE_SIZE[size].maxAmount;
     if(tileIndex < currentTileCount){
       return size;
     }
@@ -263,15 +242,15 @@ Tiles.prototype.getNextTileSize = function(tileIndex) {
 /*
 * Reduce tile size
 * This is checking all the tile size and look for the next area smaller then the current one.
-* To find the area we just ened to multiply the col and row (constants.TILE_SIZE[size].col * constants.TILE_SIZE[size].row)
+* To find the area we just ened to multiply the col and row (Constants.TILE_SIZE[size].col * Constants.TILE_SIZE[size].row)
 * @param {string} currentTileSize - big, medium, small, ect.
 */
 Tiles.prototype.reduceTileSize = function(currentTileSize) {
-  let currentTile = constants.TILE_SIZE[currentTileSize];
+  let currentTile = Constants.TILE_SIZE[currentTileSize];
   let currentTileArea = currentTile.col * currentTile.row;
   let nextSize = null; // This will return null if no smaller tile are found.
-  for (let size in constants.TILE_SIZE) {
-    let nextTileArea = constants.TILE_SIZE[size].col * constants.TILE_SIZE[size].row;
+  for (let size in Constants.TILE_SIZE) {
+    let nextTileArea = Constants.TILE_SIZE[size].col * Constants.TILE_SIZE[size].row;
     if (nextTileArea < currentTileArea) {
       return size;
     }
@@ -284,8 +263,8 @@ Tiles.prototype.reduceTileSize = function(currentTileSize) {
 */
 Tiles.prototype.getMaxTileCount = function() {
   let maxTileCount = 0;
-  for (let size in constants.TILE_SIZE) {
-    maxTileCount = maxTileCount + constants.TILE_SIZE[size].maxAmount;
+  for (let size in Constants.TILE_SIZE) {
+    maxTileCount = maxTileCount + Constants.TILE_SIZE[size].maxAmount;
   }
   return maxTileCount;
 };
@@ -326,8 +305,8 @@ Tiles.prototype.buildTiles = function() {
         tileCount++;
         tile.key = index;
         tile.target = availableAreaCoords[0]; //Take the first one in the array. They are already shoveled
-        tile.col = constants.TILE_SIZE[tile.size].col;
-        tile.row = constants.TILE_SIZE[tile.size].row;
+        tile.col = Constants.TILE_SIZE[tile.size].col;
+        tile.row = Constants.TILE_SIZE[tile.size].row;
         let myTile = new Tile(this, tile);
 
         // Update free & taken coords
@@ -367,20 +346,6 @@ Tile.prototype.getTileInfos = function() {
   };
 };
 
-/*
-* Get data infos
-*/
-Tile.prototype.getTileInfos = function() {
-  return {
-    size: this.params.size,
-    x: this.params.target.x * this.grid.tileWidth * 100 / this.grid.gridWidth,
-    y: this.params.target.y * this.grid.tileHeight * 100 / this.grid.gridHeight,
-    width: (this.params.col * 100 / this.grid.col) - this.grid.gridWidthSpacer,
-    height: (this.params.row * 100 / this.grid.row) - this.grid.gridHeightSpacer,
-    id: this.params.key
-  };
-};
-
 /**
 * Moza
 */
@@ -396,9 +361,8 @@ class Moza extends Tiles {
     // Build the tiles. At this point we will have the size and position of all the tiles.
     this.buildTiles();
     // This will parse the
-    this.showTile();
+    this.showTile(params);
   }
 }
-
 
 global.Moza = Moza;
