@@ -1,4 +1,8 @@
 node_modules
 npm-debug.log
 temp
+<<<<<<< HEAD
 !src
+=======
+legacy
+>>>>>>> Get deeper with ES6
