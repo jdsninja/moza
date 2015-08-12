@@ -1,6 +1,5 @@
 'use strict';
 
-import {constants} from './config';
 import Tiles from './tiles';
 
 /**
@@ -8,38 +7,12 @@ import Tiles from './tiles';
 */
 class Moza extends Tiles {
   constructor() {
-    // todo: should be in grid class
-    this.container = null;
-    this.gridWidth = null;
-    this.gridHeight = null;
-    this.col = null;
-    this.row = null;
-    this.gridWidthSpacer = null;
-    this.gridHeightSpacer = null;
-    this.tileWidth = null;
-    this.tileHeight = null;
-    this.coords = {
-      all: [],
-      free: [],
-      taken: []
-    };
-
-    // todo: should be in tiles class
-    this.tiles = [];
-    this.tileQueue = [];
-    for (let i = 0, len = 40; i < len; i++) {
-      this.tiles.push({
-        id: i,
-        title: 'title',
-        img: ''
-      });
-    }
+    super(); // This will call the parent constructor
   }
+
   /*
   * Build
-  * @param {string} el
-  * @param {number} col
-  * @param {number} row
+  * @param {object} params - el, col & row
   */
   build(params) {
     this.buildGrid(params);
