@@ -1,4 +1,4 @@
-# Moza [![Build Status](https://api.travis-ci.org/jeromeds/Moza.svg)](https://travis-ci.org/jeromeds/Moza)
+# Moza [![Build Status](https://travis-ci.org/jeromeds/moza.svg)](https://travis-ci.org/jeromeds/moza)
 
 Moza is, first of all, generating a grid. And then, it will fill this grid with tiles of different size.
 

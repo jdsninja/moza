@@ -2,3 +2,5 @@ node_modules
 npm-debug.log
 temp
 !src
+!dist
+legacy
