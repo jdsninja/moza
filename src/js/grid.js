@@ -48,8 +48,8 @@ class Grid {
   * @param {object} coord
   */
   getOccupationFromCoord(params) {
-    var {totalCol, totalRow, coord} = params;
-    let coords = [];
+    let {totalCol, totalRow, coord} = params,
+        coords = [];
     if (coord) {
       for (let i = 0; i < totalCol; i++) {
         for (let j = 0; j < totalRow; j++) {
@@ -142,8 +142,8 @@ class Grid {
   */
   showCoords() {
     this.coords.all.forEach(coord => {
-      let left = this.gridWidth / this.col * coord.x;
-      let top = this.gridHeight / this.row * coord.y;
+      let left = this.gridWidth / this.col * coord.x,
+          top = this.gridHeight / this.row * coord.y;
       left = left * 100 / this.gridWidth;
       top = top * 100 / this.gridHeight;
       let node = document.createElement("DIV");

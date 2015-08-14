@@ -7,7 +7,7 @@ import Tiles from './tiles';
 */
 class Moza extends Tiles {
   constructor() {
-    super(); // This will call the parent constructor
+    super(); // This will call the parent constructor=
   }
 
   /*
