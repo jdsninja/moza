@@ -7,7 +7,7 @@ export const constants = {
   // The first tile size have the priority.
   // That mean will parse the tile size from top to bottom.
   // Its better to add the biggest tile at the top.
-  'TILE_SIZE': {
+  TILE_SIZE: {
     XXL: {
       maxAmount: 1,
       col: 5,
