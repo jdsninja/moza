@@ -1,19 +1,13 @@
 'use strict';
 
 import Tiles from './tiles';
-import request from '../../node_modules/superagent/lib/client.js';
 
 /**
 * Moza
 */
 class Moza extends Tiles {
   constructor() {
-    super(); // This will call the parent constructor
-    request
-      .get('../../data/default.json')
-      .end(function(err, res){
-        console.log(JSON.parse(res.text));
-      });
+    super(); // This will call the parent constructor=
   }
 
   /*
