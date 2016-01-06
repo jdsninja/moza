@@ -209,6 +209,6 @@ const Moza = (state) => {
   }
 };
 
-Moza({el: 'myStage1', totalCol:7, totalRow:7, url: '../../data/default.json'}).build();
+
 
 global.Moza = Moza;
